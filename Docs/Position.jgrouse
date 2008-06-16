@@ -1,0 +1,263 @@
+/*extern MooTools, $, $defined, $pick, Class, Fx, Garbage, Element, Options */
+if (typeof MooTools === 'undefined') { var MooTools = { Plugins: { modulesLoaded: [] } }; }
+if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoaded: [] }; }
+/**
+ * @file Position.js - dependent on mootools v1.2b2 or greater
+ */
+/**
+ * A class used to position elements with a transition
+ * @class MooTools.Plugins.Position
+ * @implements Options
+ * @version 0.2
+ */
+MooTools.Plugins.Position = new Class({
+	Implements: [Options],
+	/**
+	 * Holds the options for this Position object
+	 * @variable {Object} options
+	 */
+	options: {
+		/**
+		 * Frames per second for the effect
+		 * Defaults to 50
+		 * @property {option Number} fps
+		 */
+		fps: 50,
+		/**
+		 * Units to use for the value of the fx (px|pt|em,etc..)
+		 * Defaults to false
+		 * @property {option String} unit
+		 */
+		unit: false,
+		/**
+		 * Defines how to handle subsequent calls to start of the fx
+		 * Defaults to chain
+		 * @property {option String} link
+		 */
+		link: 'chain',
+		/**
+		 * Amount of time to be used when repositioning elements
+		 * Defaults to 250ms
+		 * @property {option Number} duration
+		 */
+		duration: 250,
+		/**
+		 * Transition to use when repositioning elements
+		 * Defaults to Fx.Transitions.circOut
+		 * @property {option Fx.Transition} transition
+		 */
+		transition: Fx.Transitions.Circ.easeOut
+	},
+	/**
+	 * Holds the morph fx used for positioning
+	 * @variable {public Fx.Morph} morph
+	 */
+	morph: Class.empty,
+	/**
+	 * Creates a new MooTools.Plugins.Position
+	 * @function {MooTools.Plugins.Position} initialize
+	 */
+	initialize: function (element, options) {
+		this.el = $(element);
+		this.setOptions(options);
+		this.morph = new Fx.Morph(this.el,this.options);
+		var location = this.el.getPosition();
+		this.morph.set({top:location.y,left:location.x});
+	},
+	/**
+	 * Gets the top position of an element if it were to be centered vertically
+	 * @function {public Number} getCenteredVerticalPosition
+	 * @param {String} element - id or the element to be positioned
+	 * @param {Number} topPadding - amount of space to leave above the element
+	 * @param {Number} height - pixel height of the element to center
+	 * @returns {Integer} value of top of the element if it were centered vertically
+	 */
+	getCenteredVerticalPosition: function(topPadding,pHeight) {
+		var yoffset, windowHeight, height, contentHeight, calcedPadding, newTop;
+		var parent = this.el.getParent();
+		if (parent.tagName.toLowerCase() === 'body') { parent = window; }
+		yoffset = window.getScrollTop();
+		windowHeight = parent.getSize().y;
+		if (windowHeight > topPadding) {
+			if (!$defined(pHeight)) { height = this.el.getSize().y; } else { height = pHeight; }
+			contentHeight = height;
+			if (windowHeight - contentHeight > topPadding) {
+				calcedPadding = ((windowHeight / 2) - (contentHeight / 2));
+				if (calcedPadding > topPadding) {
+					newTop = calcedPadding + yoffset;
+				} else {
+					newTop = topPadding + yoffset;
+				}
+			} else {
+				newTop = topPadding;
+			}
+		}
+		return newTop;
+	},
+	/* Gets the left position of an element if it were to be centered horizontally
+	 * @function {public Number} left position of element if it were to be centered
+	 * @param {String} element - id or the element to be positioned
+	 * @param {Number} leftPadding - amount of space to leave left of the element
+	 * @param {Number} width - pixel width of the element to center
+	 * @returns {Integer} value of left of the element if it were centered horizontally
+	 */
+	getCenteredHorizontalPosition: function(leftPadding,pWidth) {
+		var xoffset, windowWidth, width, contentWidth, calcedPadding, newLeft;
+		var parent = this.el.getParent();
+		if (parent.tagName.toLowerCase() === 'body') { parent = window; }
+		xoffset = window.getScrollLeft();
+		windowWidth = parent.getSize().x;
+		if (windowWidth > leftPadding) {
+			if (!$defined(pWidth)) { width = this.el.getSize().x; } else { width = pWidth; }
+			contentWidth = width;
+			if (windowWidth - contentWidth > leftPadding) {
+				calcedPadding = ((windowWidth / 2) - (contentWidth / 2));
+				if (calcedPadding > leftPadding) {
+					newLeft = calcedPadding + xoffset;
+				} else {
+					newLeft = leftPadding + xoffset;
+				}
+			}	else {
+				newLeft = leftPadding;
+			}
+		}
+		return newLeft;
+	},
+	/**
+	 * Sets the vertical position of an element
+	 * @function {public void} setVerticalPosition
+	 * @param {Number} topPadding - amount of space to leave above the element
+	 * @param {Number} height - pixel height of the element to center
+	 */
+	setVerticalPosition: function(topPadding,height) {
+		var windowHeight, newTop, fxtop;
+		if (document.getElementById) {
+			windowHeight = window.getSize().y;
+			if (windowHeight > topPadding &&
+					!(this.el.getStyle('position') === 'absolute' || this.el.getStyle('position') === 'relative')) {
+				this.el.setStyle('position','absolute');
+			}
+			newTop = getCenteredVerticalPosition.run([topPadding,height],this) + 'px';
+			this.morph.start({'top':newTop});
+		}
+	},
+	/* Sets the horizontal position of an element
+	 * @function {public void} setHorizontalPosition
+	 * @param {String} element - id or the element to be positioned
+	 * @param {Number} leftPadding - amount of space to leave left of the element
+	 * @param {Number} width - pixel width of the element to center
+	 */
+	setHorizontalPosition: function(leftPadding,width) {
+		var windowWidth, newLeft, fxleft;
+		if (document.getElementById) {
+			windowWidth = window.getSize().x;
+			if (windowWidth > leftPadding &&
+					!(this.el.getStyle('position') === 'absolute' || this.el.getStyle('position') === 'relative')) {
+				this.el.setStyle('position','absolute');
+			}
+			newLeft = getCenteredHorizontalPosition.run([leftPadding,width],this) + 'px';
+			this.morph.start({'left':newLeft});
+		}
+	},
+	/**
+	 * Centers an element in it's parent frame
+	 * @function {public void} centerElement
+	 * @param {Number} pTopPadding - amount of space to always leave above the element
+	 * @param {Number} pLeftPadding - amount of space to always leave to the left of the element
+	 * @param {Number} pWidth - pixel width of the element
+	 * @param {Number} pHeight - pixel height of the element
+	 */
+	centerElement: function(pTopPadding,pLeftPadding,pWidth,pHeight) {
+		var width, height, topPadding, leftPadding;
+		var eleSize = this.el.getSize();
+		if (!$defined(pTopPadding)) { topPadding = 0; } else { topPadding = pTopPadding; }
+		if (!$defined(pLeftPadding)) { leftPadding = 0; } else { leftPadding = pLeftPadding; }
+		if (!$defined(pWidth)) { width = eleSize.x; } else { width = pWidth; }
+		if (!$defined(pHeight)) { height = eleSize.y; } else { height = pHeight; }
+		if (!(this.el.getStyle('position') === 'absolute' || this.el.getStyle('position') === 'relative')) {
+			this.el.setStyle('position','absolute');
+		}
+		var newLeft = getCenteredHorizontalPosition.run([leftPadding,width],this) + 'px';
+		var newTop = getCenteredVerticalPosition.run([topPadding,height],this) + 'px';
+		this.morph.start({top:newTop,left:newLeft});
+	},
+	/**
+	 * Move an element to the provided coordinates
+	 * @function {public void} moveElement
+	 * @param {Number} pTop - the value to move the top of the element to
+	 * @param {Number} pLeft - the value to move the left of the element to
+	 */
+	moveElement: function (pTop,pLeft) {
+		if (this.el.getStyle('position') !== 'absolute' || this.el.getStyle('position') !== 'relative') {
+			this.el.setStyle('position','absolute');
+		}
+		this.morph.start({top:pTop,left:pLeft});
+	}
+});
+/**
+ * Defines the MooToolsPluginPosition custom Element Property
+ * @scope Element.Properties.MooToolsPluginPosition
+ */
+Element.Properties.MooToolsPluginPosition = {
+	/**
+	 * Stores an MooTools.Plugin.Position object in the invoking Element's storage space
+	 * with the given options
+	 * @function {public MooTools.Plugin.Position} set
+	 * @param {Object} options to pass to the MooTools.Plugin.Position constructor
+	 * @returns the newly created MooTools.Plugin.Position object
+	 */
+	set: function(options) {
+		var position = this.retrieve('MooToolsPluginPosition');
+		if (position) { delete position; }
+		return this.store('MooToolsPluginPosition', new MooTools.Plugin.Position(this,options));
+	},
+	/**
+	 * Retrieves the MooTools.Plugin.Position object in the invoking Element's storage space or
+	 * creates a new one with the given options if one does not exist
+	 * @function {public MooTools.Plugin.Position} get
+	 * @param {String} property being retrieved
+	 * @param {Object} options to pass to the MooTools.Plugin.Position constructor
+	 * @returns the MooTools.Plugin.Position object in this Element's storage
+	 */
+	get: function(property, options) {
+		if (options || !this.retrieve('MooToolsPluginPosition')) { this.set('MooToolsPluginPosition',options); }
+		var position = this.retrieve('MooToolsPluginPosition');
+		position.property = property;
+		return position;
+	}
+};
+/** @end Element.Properties.MooToolsPluginPosition */
+
+/**
+ * Defines additional methods for the mootools Element class
+ * @struct Element
+ */
+Element.implement({
+	/**
+	 * Generic to center an Element in the page, to truly center the position style must either
+	 * not be set or be set to absolute
+	 * @function {public Element} center
+	 * @returns Element center was invoked on
+	 */
+	center: function() {
+		var position = this.get('MooToolsPluginPosition');
+		position.centerElement();
+		return this;
+	},
+	/**
+	 * Generic to move an Element to a new position
+	 * @function {public Element} move
+	 * @param {Number} top - new top value for positioning
+	 * @param {Number} left - new left value for positioning
+	 * @returns Element move was invoked on
+	 */
+	move: function(pTop,pLeft) {
+		var position = this.get('MooToolsPluginPosition');
+		var top = $pick(pTop,this.getPosition().y);
+		var left = $pick(pLeft,this.getPosition().x);
+		position.moveElement(top,left);
+		return this;
+	}
+});
+/** @end Element */
+MooTools.Plugin.modulesLoaded[MooTools.Plugin.modulesLoaded.length] = 'Position';

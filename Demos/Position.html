@@ -1,0 +1,27 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> <!-- ends in footer.php -->
+	<head>
+		<title>Position.js Test Page</title>
+		<script src="assets/js/mootools.js"></script>
+		<script type="text/javascript" src="../Source/Position.js.new"></script>
+		<style type="text/css">
+			div { float: left; }
+		</style>
+	</head>
+	<body>
+		<h1>Position.js Test Page</h1>
+		<div>
+			<p>some content</p>
+		</div>
+		<script type="text/javascript">
+			window.addEvent('domready',function() {
+				var post = window.pos = new MooTools.Plugins.Position(document.getElement('div'), {
+					duration: '1500',
+					fps: 35,
+					minTop: 15
+				});
+				pos.center();
+			});
+		</script>
+	</body>
+</html>
