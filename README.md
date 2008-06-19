@@ -3,6 +3,17 @@ Plugins for MooTools
 
 This is a space to keep some various utilities and plugins I've written or helped write based on the [mootools-core](http://github.com/mootools/mootools-core). They are not fully supported or even fully tested at this point but I needed a place to put them while I ported them from 1.11 (in some cases) and 1.2b (in most cases).
 
+Documentation
+-------------
+
+I'm including at the root of this project the files I will be using to display my markdown documentation.
+.htaccess
+:		Contains the apache mod_rewrite rules being used to send files through the php file which is calling the markdown engine
+markup.php
+:		Basic shell for calling the Markdown text processor
+markdown.php
+:		Slightly modified version of [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)
+
 Demos
 -----
 
