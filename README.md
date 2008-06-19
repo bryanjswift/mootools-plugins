@@ -7,12 +7,9 @@ Documentation
 -------------
 
 I'm including at the root of this project the files I will be using to display my markdown documentation.
-.htaccess
-:		Contains the apache mod_rewrite rules being used to send files through the php file which is calling the markdown engine
-markup.php
-:		Basic shell for calling the Markdown text processor
-markdown.php
-:		Slightly modified version of [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)
+* .htaccess - Contains the apache mod_rewrite rules being used to send files through the php file which is calling the markdown engine
+* markup.php - Basic shell for calling the Markdown text processor
+* markdown.php - Slightly modified version of [PHP Markdown Extra](http://michelf.com/projects/php-markdown/extra/)
 
 Demos
 -----
