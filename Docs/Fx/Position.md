@@ -22,7 +22,7 @@ Class to position elements to certain coordinates with a transition.
 
 ### Options:
 
-* parentEl					- (*[Element](http://doc.mootools.net/Element/Element#Element)*: defaults to window) The element to position relative to
+* parentEl					- (*[Element](http://docs.mootools.net/Element/Element#Element)*: defaults to window) The element to position relative to
 * defaultTop				- (*number*: defaults to 0) The top value to use if the calculated top forces content outside the parent element
 * defaultLeft				- (*number*: defaults to 0) The left value to use if the calculated left forces content outside the parent element
 
@@ -47,7 +47,7 @@ Center an element in the browser window:
 Hash: Element.Properties {#Element-Properties}
 ==============================================
 
-see [Element.Properties](http://doc.mootools.net/Element/Element/#Element-Properties)
+see [Element.Properties](http://docs.mootools.net/Element/Element/#Element-Properties)
 
 Element Property: MooToolsPluginsPosition {#Element-Properties:MooToolsPluginsPosition}
 ---------------------------------------------------------------------------------------
