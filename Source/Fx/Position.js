@@ -1,9 +1,13 @@
-if (typeof MooTools === 'undefined') { var MooTools = { Plugins: { modulesLoaded: [] } }; }
-if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoaded: [] }; }
+/*
+Script: Fx.Position.js
+	Position elements to certain coordinates with a transition.
 
+License:
+	MIT-style license. 
+ */
 (function() {
 
-	MooTools.Plugins.Position = new Class({
+	Fx.Position = new Class({
 
 		Extends: Fx.CSS,
 
@@ -16,20 +20,19 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 		morph: Class.empty,
 
 		initialize: function (element, options) {
-			this.element = $(element);
+			this.element = element = $(element);
 			this.parent(options);
-			this.morph = new Fx.Morph(this.element,this.options);
-			var location = this.element.getPosition();
+			this.morph = new Fx.Morph(element,this.options);
+			var location = element.getPosition();
 			this.morph.set({top:location.y,left:location.x});
 		},
 
-		centerY: function(height) {
+		centerVertically: function(height) {
 			var windowHeight, newTop, fxtop;
 			var defaultTop = this.options.defaultTop;
 			if (document.getElementById) {
 				windowHeight = window.getSize().y;
-				if (windowHeight > defaultTop &&
-						!(this.element.getStyle('position') === 'absolute' || this.element.getStyle('position') === 'relative')) {
+				if (this.element.getStyle('position') !== 'absolute') {
 					this.element.setStyle('position','absolute');
 				}
 				newTop = getCenteredVerticalPosition(this.element,this.options.parentEl,defaultTop,height) + 'px';
@@ -38,13 +41,12 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 			return this;
 		},
 
-		centerX: function(width) {
+		centerHorizontally: function(width) {
 			var windowWidth, newLeft, fxleft;
 			var defaultLeft = this.options.defaultLeft;
 			if (document.getElementById) {
 				windowWidth = window.getSize().x;
-				if (windowWidth > defaultLeft &&
-						!(this.element.getStyle('position') === 'absolute' || this.element.getStyle('position') === 'relative')) {
+				if (this.element.getStyle('position') !== 'absolute') {
 					this.element.setStyle('position','absolute');
 				}
 				newLeft = getCenteredHorizontalPosition(this.element,this.options.parentEl,defaultLeft,width) + 'px';
@@ -53,14 +55,10 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 			return this;
 		},
 
-		center: function(pWidth,pHeight) {
-			var width, height;
+		center: function(width,height) {
 			var defaultTop = this.options.defaultTop;
 			var defaultLeft = this.options.defaultLeft;
-			var eleSize = pWidth && pHeight ? null : this.element.getSize();
-			if (!$defined(pWidth)) { width = eleSize.x; } else { width = pWidth; }
-			if (!$defined(pHeight)) { height = eleSize.y; } else { height = pHeight; }
-			if (!(this.element.getStyle('position') === 'absolute' || this.element.getStyle('position') === 'relative')) {
+			if (this.element.getStyle('position') !== 'absolute') {
 				this.element.setStyle('position','absolute');
 			}
 			var newTop = getCenteredVerticalPosition(this.element,this.options.parentEl,defaultTop,height) + 'px';
@@ -69,11 +67,11 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 			return this;
 		},
 
-		move: function (pTop,pLeft) {
-			if (this.element.getStyle('position') !== 'absolute' || this.element.getStyle('position') !== 'relative') {
+		move: function (top,left) {
+			if (this.element.getStyle('position') !== 'absolute') {
 				this.element.setStyle('position','absolute');
 			}
-			this.morph.start({top:pTop,left:pLeft});
+			this.morph.start({'top':top,'left':left});
 			return this;
 		},
 
@@ -90,6 +88,7 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 		var calcedTop, newTop;
 		var yoffset = parentEl.getScrollTop();
 		var windowHeight = parentEl.getSize().y;
+		height = !height ? element.getSize().x : height;
 		if (windowHeight - height > defaultTop) {
 			calcedTop = ((windowHeight / 2) - (height / 2));
 			if (calcedTop > defaultTop) {
@@ -108,6 +107,7 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 		var calcedLeft, newLeft;
 		var xoffset = parentEl.getScrollLeft();
 		var windowWidth = parentEl.getSize().x;
+		width = !width ? element.getSize().y : width;
 		if (windowWidth - width > defaultLeft) {
 			calcedLeft = ((windowWidth / 2) - (width / 2));
 			if (calcedLeft > defaultLeft) {
@@ -124,19 +124,20 @@ if (typeof MooTools.Plugins === 'undefined') { MooTools.Plugins = { modulesLoade
 
 })();
 
-Element.Properties.MooToolsPluginsPosition = {
+Element.Properties.position = {
 
 	set: function(options) {
-		var position = this.retrieve('MooToolsPluginsPosition');
+		var position = this.retrieve('position');
 		if (position) { position.cancel(); }
-		return this.store('MooToolsPluginsPosition', new MooTools.Plugins.Position(this,options));
+		return this.eliminate('position').store('position:options', $extend({'link':'cancel'}, options));
 	},
 
 	get: function(property, options) {
-		if (options || !this.retrieve('MooToolsPluginsPosition')) { this.set('MooToolsPluginsPosition',options); }
-		var position = this.retrieve('MooToolsPluginsPosition');
-		position.property = property;
-		return position;
+		if (options || !this.retrieve('position')) {
+			if (options || !this.retrieve('position:options')) { this.set('position',options); }
+			this.store('position', new Fx.Position(this, this.retrieve('position:options')));
+		}
+		return this.retrieve('position');
 	}
 
 };
@@ -144,14 +145,25 @@ Element.Properties.MooToolsPluginsPosition = {
 
 Element.implement({
 
-	center: function() {
-		var position = this.get('MooToolsPluginsPosition');
-		position.center();
+	center: function(options) {
+		var position = this.get('position');
+		options = options || {};
+		switch (options.type) {
+			case 'x':
+				position.centerHorizontally(options.width);
+				break;
+			case 'y':
+				position.centerVertically(options.height);
+				break;
+			default:
+				position.center(options.width, options.height);
+				break;
+		}
 		return this;
 	},
 
 	move: function(pTop,pLeft) {
-		var position = this.get('MooToolsPluginsPosition');
+		var position = this.get('position');
 		var top = $pick(pTop,this.getPosition().y);
 		var left = $pick(pLeft,this.getPosition().x);
 		position.move(top,left);
@@ -160,4 +172,3 @@ Element.implement({
 
 });
 
-MooTools.Plugins.modulesLoaded[MooTools.Plugins.modulesLoaded.length] = 'Position';

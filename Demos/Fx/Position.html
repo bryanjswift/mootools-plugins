@@ -15,12 +15,13 @@
 		</div>
 		<script type="text/javascript">
 			window.addEvent('domready',function() {
-				var post = window.pos = new MooTools.Plugins.Position(document.getElement('div'), {
+				var post = window.pos = new Fx.Position(document.getElement('div'), {
 					duration: '1500',
 					fps: 35,
+					link: 'chain',
 					minTop: 15
 				});
-				pos.center();
+				pos.center().move(100,150);
 			});
 		</script>
 	</body>
