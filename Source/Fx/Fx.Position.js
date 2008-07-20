@@ -14,7 +14,8 @@ License:
 		options: {
 			defaultTop: 0,
 			defaultLeft: 0,
-			parentEl: window
+			parentEl: window,
+			type: 'center'
 		},
 
 		morph: Class.empty,
@@ -23,8 +24,8 @@ License:
 			this.element = element = $(element);
 			this.parent(options);
 			this.morph = new Fx.Morph(element,this.options);
-			var location = element.getPosition();
-			this.morph.set({top:location.y,left:location.x});
+			var loc = element.getPosition();
+			this.morph.set({top:loc.y,left:loc.x});
 		},
 
 		centerVertically: function(height) {
@@ -55,7 +56,7 @@ License:
 			return this;
 		},
 
-		center: function(width,height) {
+		center: function(height,width) {
 			var defaultTop = this.options.defaultTop;
 			var defaultLeft = this.options.defaultLeft;
 			if (this.element.getStyle('position') !== 'absolute') {
@@ -73,6 +74,20 @@ License:
 			}
 			this.morph.start({'top':top,'left':left});
 			return this;
+		},
+
+		start: fucntion(type,y,x) {
+			switch (type.toLowerCase()) {
+				case 'center':
+					this.center(y,x);
+					break;
+				case 'move':
+					this.move(y,x);
+					break;
+				default:
+					this.center(y,x);
+					break;
+			}
 		},
 
 		cancel: function() {

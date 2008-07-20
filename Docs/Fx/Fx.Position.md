@@ -99,12 +99,12 @@ Centers the Element horizontally and vertically relative to parentEl
 
 ### Syntax:
 
-	myPosition.center([width [,height]]);
+	myPosition.center([height [,width]]);
 
 ### Arguments:
 
-1. width - (*number*, optional) width the element should be considered for the purposes of positioning, uses actual element width if not specified
 1. height - (*number*, optional) height the element should be considered for the purposes of positioning, uses actual element height if not specified
+1. width - (*number*, optional) width the element should be considered for the purposes of positioning, uses actual element width if not specified
 
 ### Returns:
 
@@ -114,6 +114,33 @@ Centers the Element horizontally and vertically relative to parentEl
 
 	var myPosition = new Fx.Position('myElement');
 	myPosition.center('100px','150px');
+
+
+
+Fx.Position Method: start {#Fx-Position:start}
+-------------------------
+
+Start moving the Element according to type provided
+
+### Syntax:
+
+	myPosition.start([type [,y [,x]]]);
+
+### Arguments:
+
+1. type - (*string*, optional) how to move the element either 'center' or 'move'
+2. y - (*number*, optional) the vertical value to use for the effect
+3. x - (*number*, optional) the horizontal value to use for the effect
+
+### Returns:
+
+* (*object*) This Fx.Position instance.
+
+#Examples:
+
+	var myPosition = new Fx.Positioin('myElement');
+	myPosition.start('center');
+	myPosition.start('move', '100px', '150px');
 
 
 
