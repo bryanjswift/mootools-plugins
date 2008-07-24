@@ -76,7 +76,7 @@ License:
 			return this;
 		},
 
-		start: fucntion(type,y,x) {
+		start: function(type,y,x) {
 			switch (type.toLowerCase()) {
 				case 'center':
 					this.center(y,x);
