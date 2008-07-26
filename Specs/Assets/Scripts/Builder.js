@@ -15,7 +15,7 @@ var Builder = {
 
 	paths: {
 		source: 'Source',
-		specs: 'Specs',
+		specs: 'Specs'
 	},
 
 	included: {
@@ -27,13 +27,12 @@ var Builder = {
 	scripts: {
 		source: {
 			'Fx'        : ['Fx.Position'],
-			'Utilities'	: ['XmlParser']
+			'Utilities' : ['XmlParser']
 		},
 
 		specs: {
 			'Utilities' : ['XmlParser'],
 		}
-
 	},
 
 	initialize: function(root){
