@@ -213,8 +213,9 @@ if (typeof(MooTools.Utilities) === 'undefined') { MooTools.Utilities = {}; }
 				} else {
 					nodeObj = {};
 				}
-				i = childrenLength - 1;
+				i = childrenLength;
 				do {
+					i = i - 1;
 					child = children[i];
 					childType = child.nodeType;
 					childValue = child.nodeValue;
@@ -223,7 +224,7 @@ if (typeof(MooTools.Utilities) === 'undefined') { MooTools.Utilities = {}; }
 					if (childType !== 3 || typeof childValue !== 'string' || childValue.replace(/^\s+|\s+$/g, '') !== '') {
 						populateObject(nodeObj,child);
 					}
-				} while (i = i - 1);	// stops when i = 0 because 0 evaluates to false; this is a speed optimization and causes
+				} while (i);	// stops when i = 0 because 0 evaluates to false; this is a speed optimization and causes
 															// this file to not pass jslint validation
 				break;
 		}
@@ -279,7 +280,7 @@ if (typeof(MooTools.Utilities) === 'undefined') { MooTools.Utilities = {}; }
 		 */
 		json: function () {
 			var tmpObj;
-			if (!$defined(this.jsonObj)) {
+			if (!this.jsonObj) {
 				tmpObj = {};
 				if (!this.xmlDoc) { return null; }
 				if (!this.xmlDoc.hasChildNodes()) { return tmpObj; }
