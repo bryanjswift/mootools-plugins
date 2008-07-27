@@ -16,7 +16,7 @@ if (typeof(MooTools.Utilities) === 'undefined') { MooTools.Utilities = {}; }
 	 * Class to wrap a data node from a parsed xml file
 	 * @class DataNode
 	 * @version 0.2
-	 * @author AKQA - bryan.swift
+	 * @author bryanjswift
 	 */
 	var DataNode = function(val,attributes) {
 	
@@ -247,7 +247,7 @@ if (typeof(MooTools.Utilities) === 'undefined') { MooTools.Utilities = {}; }
 	 * Class used to interact with xml data
 	 * @class MooTools.Utilties.XmlParser
 	 * @version 0.2
-	 * @author AKQA - bryan.swift
+	 * @author bryanjswift
 	 */
 	MooTools.Utilities.XmlParser = new Class({
 		/**
