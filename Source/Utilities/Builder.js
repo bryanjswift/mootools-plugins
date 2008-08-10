@@ -1,22 +1,28 @@
-/* Requires at least Class and Class.Extras to already be included */
-var MooBuilder = function(meta,basePath) {
+var MooBuilder = function(coreBasePath,moreBasePath) {
 	// setup vars
-	this.meta = meta;
-	this.basePath = basePath.match(/\/$/) ? basePath : basePath + '/';
+	this.coreBasePath = coreBasePath.match(/\/$/) ? coreBasePath : coreBasePath + '/';
+	this.moreBasePath = moreBasePath.match(/\/$/) ? moreBasePath : moreBasePath + '/';
 	this.included = [];
-	// define functions
-	this.include = function(script,onInclude) {
-		if (this.isIncluded(script)) return;
+	function includeFrom(meta,basePath,script) {
+		if (this.isIncluded(script)) { return; }
 		var found = false;
-		var group, name, i;
-		for (group in this.meta) {
-			for (name in this.meta[group]) {
-				if (name === script) {
-					found = this.meta[group][name];
-					break;
+		var group, name, i, metaGroup;
+		for (group in meta) {
+			if (meta.hasOwnProperty(group)) {
+				metaGroup = meta[group];
+				for (name in metaGroup) {
+					if (metaGroup.hasOwnProperty(name)) {
+						if (name === script) {
+							found = metaGroup[name];
+							break;
+						}
+					}
 				}
 			}
-			if (found) break;
+			if (found) { break; }
+		}
+		if (!found) {
+			return found;
 		}
 		var deps = found.deps;
 		var depsLength = deps.length;
@@ -25,27 +31,40 @@ var MooBuilder = function(meta,basePath) {
 				this.include(deps[i]);
 			}
 		}
-		var path = this.basePath + group + '/' + script + '.js';
+		var path = basePath + group + '/' + script + '.js';
 		var elm = document.createElement('script');
 		elm.setAttribute('type','text/javascript');
 		elm.setAttribute('src',path);
 		document.getElementsByTagName('head')[0].appendChild(elm);
 		this.included[this.included.length] = script;
 		elm = null;
-		if (typeof onInclude === 'function') onInclude();
+		return !!found;
+	}
+	// define functions
+	this.include = function(script,onInclude,onError) {
+		var found = includeFrom.call(this,this.CoreMeta,this.coreBasePath,script);
+		if (!found) { found = includeFrom.call(this,this.MoreMeta,this.moreBasePath,script); }
+		if (found) {
+			if (typeof onInclude === 'function') { onInclude(); }
+		} else {
+			if (typeof onError === 'function') { onError(); }
+		}
 	};
 	this.isIncluded = function(script) {
 		var included = this.included;
 		var length = included.length;
 		var i;
 		for (i = 0; i < length; i = i + 1) {
-			if (included[i] === script) return true;
+			if (included[i] === script) { return true; }
 		}
 		return false;
 	};
+	this.register = function(script) {
+		if (!this.isIncluded(script)) { this.included[this.included.length] = script; }
+	};
 };
 
-MooBuilder.CoreMeta = {
+MooBuilder.prototype.CoreMeta = {
 	"Core": {
 		"Core": {
 			"deps": ["Core"]
@@ -107,7 +126,7 @@ MooBuilder.CoreMeta = {
 			"deps": ["Array", "String", "Function", "Number", "Hash"]
 		},
 		"Cookie": {
-			"deps": ["Browser", "Class", "Class.Extras"]
+			"deps": ["Browser", "Class.Extras"]
 		},
 		"Swiff": {
 			"deps": ["Element.Event"]
@@ -142,22 +161,19 @@ MooBuilder.CoreMeta = {
 		}
 	},
 	"Plugins": {
-			"Fx.Slide": {
+		"Fx.Slide": {
 			"deps": ["Fx", "Element.Style"]
 		},
 		"Fx.Scroll": {
 			"deps": ["Fx", "Element.Event", "Element.Dimensions"]
 		},
-			"Fx.Elements": {
-			"deps": ["Fx.CSS"]
-		},
-			"Drag": {
+		"Drag": {
 			"deps": ["Class.Extras", "Element.Event", "Element.Style"]
 		},
 		"Drag.Move": {
 			"deps": ["Drag", "Element.Dimensions"]
 		},
-			"Color": {
+		"Color": {
 			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"]
 		},
 		"Group": {
@@ -182,66 +198,63 @@ MooBuilder.CoreMeta = {
 			"deps": ["Class.Extras", "Element.Event", "Element.Dimensions"]
 		},
 		"Assets": {
-			"deps": ["Element.Event"],
-		},
-		"Accordion": {
-			"deps": ["Fx.Elements", "Element.Event"],
+			"deps": ["Element.Event"]
 		}
 	}
 };
 
-MooBuilder.MoreMeta = {
+MooBuilder.prototype.MoreMeta = {
 	"Fx": {
 		"Fx.Slide": {
-			"deps": ["None"],
+			"deps": ["Fx.CSS"]
 		},
 		"Fx.Scroll": {
-			"deps": ["None"],
+			"deps": ["Fx.CSS"]
 		},
-			"Fx.Elements": {
-			"deps": ["None"],
+		"Fx.Elements": {
+			"deps": ["Fx.CSS"]
 		}
 	},
 	"Drag": {
-			"Drag": {
-			"deps": ["None"],
+		"Drag": {
+			"deps": ["Class.Extras","Element"]
 		},
 		"Drag.Move": {
-			"deps": ["Drag"],
+			"deps": ["Drag"]
 		}
 	},
 	"Utilities": {
-			"Hash.Cookie": {
-			"deps": ["None"],
+		"Hash.Cookie": {
+			"deps": ["Cookie"]
 		},
-			"Color": {
-			"deps": ["None"],
+		"Color": {
+			"deps": ["Core"]
 		},
 		"Group": {
-			"deps": ["None"],
+			"deps": ["Class"]
 		},
-			"Assets": {
-			"deps": ["None"],
+		"Assets": {
+			"deps": ["Hash"]
 		}
 	},
 	"Interface": {
-			"Sortables": {
-			"deps": ["Drag.Move"],
+		"Sortables": {
+			"deps": ["Drag.Move"]
 		},
-			"Tips": {
-			"deps": ["None"],
+		"Tips": {
+			"deps": ["Class.Extras"]
 		},
 		"SmoothScroll": {
-			"deps": ["Fx.Scroll"],
+			"deps": ["Fx.Scroll"]
 		},
 		"Slider": {
-			"deps": ["Drag"],
+			"deps": ["Drag"]
 		},
 		"Scroller": {
-			"deps": ["None"],
+			"deps": ["Class.Extras"]
 		},
-			"Accordion": {
-			"deps": ["Fx.Elements"],
+		"Accordion": {
+			"deps": ["Fx.Elements"]
 		}
 	}
 };
