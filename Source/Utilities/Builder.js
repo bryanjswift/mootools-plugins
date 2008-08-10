@@ -3,6 +3,7 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 	this.coreBasePath = coreBasePath.match(/\/$/) ? coreBasePath : coreBasePath + '/';
 	this.moreBasePath = moreBasePath.match(/\/$/) ? moreBasePath : moreBasePath + '/';
 	this.included = [];
+	// private functions
 	function includeFrom(meta,basePath,script) {
 		if (this.isIncluded(script)) { return; }
 		var found = false;
@@ -40,6 +41,38 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		elm = null;
 		return !!found;
 	}
+	function searchForIncludes() {
+		var found, group, name, metaGroup;
+		var meta = this.CoreMeta;
+		for (group in meta) {
+			if (meta.hasOwnProperty(group)) {
+				metaGroup = meta[group];
+				for (name in metaGroup) {
+					if (metaGroup.hasOwnProperty(name)) {
+						found = metaGroup[name];
+						if (found.test()) {
+							this.included[this.included.length] = name;
+						}
+					}
+				}
+			}
+		}
+		meta = this.MoreMeta;
+		for (group in meta) {
+			if (meta.hasOwnProperty(group)) {
+				metaGroup = meta[group];
+				for (name in metaGroup) {
+					if (metaGroup.hasOwnProperty(name)) {
+						found = metaGroup[name];
+						if (found.test()) {
+							this.included[this.included.length] = name;
+						}
+					}
+				}
+			}
+		}
+	}
+	searchForIncludes.call(this);
 	// define functions
 	this.include = function(script,onInclude,onError) {
 		var found = includeFrom.call(this,this.CoreMeta,this.coreBasePath,script);
@@ -67,138 +100,124 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 MooBuilder.prototype.CoreMeta = {
 	"Core": {
 		"Core": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof MooTools !== "undefined"; }
 		},
 		"Browser": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof Browser !== "undefined" && typeof Browser.Engine !== "undefined"; }
 		}
 	},
 	"Native": {
 		"Array": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof Array.associate !== "undefined"; }
 		},
 		"Function": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof Function.run !== "undefined"; }
 		},
 		"Number": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof Number.limit !== "undefined"; }
 		},
 		"String": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof String.camelCase !== "undefined"; }
 		},
 		"Hash": {
-			"deps": ["Core"]
+			"deps": ["Core"],
+			"test": function() { return typeof Hash !== "undefined"; }
 		},
 		"Event": {
-			"deps": ["Browser", "Array", "Function", "Number", "String", "Hash"]
+			"deps": ["Browser", "Array", "Function", "Number", "String", "Hash"],
+			"test": function() { return !!Event && typeof Event.Keys !== "undefined"; }
 		}
 	},
 	"Class": {
 		"Class": {
-			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"]
+			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"],
+			"test": function() { return typeof Class !== "undefined"; }
 		},
 		"Class.Extras": {
-			"deps": ["Class"]
+			"deps": ["Class"],
+			"test": function() { return typeof Chain !== "undefined"; }
 		}
 	},
 	"Element": {
 		"Element": {
-			"deps": ["Browser", "Array", "String", "Function", "Number", "Hash"]
+			"deps": ["Browser", "Array", "String", "Function", "Number", "Hash"],
+			"test": function() { return typeof Element !== "undefined" && typeof Elements !== "undefined"; }
 		},
 		"Element.Event": {
-			"deps": ["Element", "Event"]
+			"deps": ["Element", "Event"],
+			"test": function() { return typeof Element.NativeEvents !== "undefined"; }
 		},
 		"Element.Style": {
-			"deps": ["Element"]
+			"deps": ["Element"],
+			"test": function() { return typeof Element.Styles !== "undefined"; }
 		},
 		"Element.Dimensions": {
-			"deps": ["Element"]
+			"deps": ["Element"],
+			"test": function() { return typeof getCoordinates !== "undefined"; }
 		}
 	},
 	"Utilities": {
 		"Selectors": {
-			"deps": ["Element"]
+			"deps": ["Element"],
+			"test": function() { return typeof Selectors !== "undefined" && typeof Selectors.RegExps !== "undefined"; }
 		},
 		"DomReady": {
-			"deps": ["Element.Event"]
+			"deps": ["Element.Event"],
+			"test": function() { return typeof Element !== "undefined" && typeof Element.Events !== "undefined" && typeof Element.Events.domready !== "undefined"; }
 		},
 		"JSON": {
-			"deps": ["Array", "String", "Function", "Number", "Hash"]
+			"deps": ["Array", "String", "Function", "Number", "Hash"],
+			"test": function() { return typeof JSON !== "undefined"; }
 		},
 		"Cookie": {
-			"deps": ["Browser", "Class.Extras"]
+			"deps": ["Browser", "Class.Extras"],
+			"test": function() { return typeof Cookie !== "undefined"; }
 		},
 		"Swiff": {
-			"deps": ["Element.Event"]
+			"deps": ["Element.Event"],
+			"test": function() { return typeof Swiff !== "undefined"; }
 		}
 	},
 	"Fx": {
 		"Fx": {
-			"deps": ["Class.Extras"]
+			"deps": ["Class.Extras"],
+			"test": function() { return typeof Fx !== "undefined"; }
 		},
 		"Fx.CSS": {
-			"deps": ["Fx", "Element.Style"]
+			"deps": ["Fx", "Element.Style"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.CSS !== "undefined"; }
 		},
 		"Fx.Tween": {
-			"deps": ["Fx.CSS"]
+			"deps": ["Fx.CSS"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Tween !== "undefined"; }
 		},
 		"Fx.Morph": {
-			"deps": ["Fx.CSS"]
+			"deps": ["Fx.CSS"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Morph !== "undefined"; }
 		},
 		"Fx.Transitions": {
-			"deps": ["Fx"]
+			"deps": ["Fx"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Transitions !== "undefined"; }
 		}
 	},
 	"Request": {
 		"Request": {
-			"deps": ["Class.Extras"]
+			"deps": ["Class.Extras"],
+			"test": function() { return typeof Request !== "undefined"; }
 		},
 		"Request.HTML": {
-			"deps": ["Request"]
+			"deps": ["Request"],
+			"test": function() { return typeof Request !== "undefined" && typeof Request.HTML !== "undefined"; }
 		},
 		"Request.JSON": {
-			"deps": ["Request", "JSON"]
-		}
-	},
-	"Plugins": {
-		"Fx.Slide": {
-			"deps": ["Fx", "Element.Style"]
-		},
-		"Fx.Scroll": {
-			"deps": ["Fx", "Element.Event", "Element.Dimensions"]
-		},
-		"Drag": {
-			"deps": ["Class.Extras", "Element.Event", "Element.Style"]
-		},
-		"Drag.Move": {
-			"deps": ["Drag", "Element.Dimensions"]
-		},
-		"Color": {
-			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"]
-		},
-		"Group": {
-			"deps": ["Class.Extras"]
-		},
-		"Hash.Cookie": {
-			"deps": ["Class.Extras", "Cookie", "JSON"]
-		},
-		"Sortables": {
-			"deps": ["Drag.Move"]
-		},
-		"Tips": {
-			"deps": ["Class.Extras", "Element.Event", "Element.Style", "Element.Dimensions"]
-		},
-		"SmoothScroll": {
-			"deps": ["Fx.Scroll"]
-		},
-		"Slider": {
-			"deps": ["Drag", "Element.Dimensions"]
-		},
-		"Scroller": {
-			"deps": ["Class.Extras", "Element.Event", "Element.Dimensions"]
-		},
-		"Assets": {
-			"deps": ["Element.Event"]
+			"deps": ["Request", "JSON"],
+			"test": function() { return typeof Request !== "undefined" && typeof Request.JSON !== "undefined"; }
 		}
 	}
 };
@@ -206,55 +225,70 @@ MooBuilder.prototype.CoreMeta = {
 MooBuilder.prototype.MoreMeta = {
 	"Fx": {
 		"Fx.Slide": {
-			"deps": ["Fx.CSS"]
+			"deps": ["Fx", "Element.Style"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Slide !== "undefined"; }
 		},
 		"Fx.Scroll": {
-			"deps": ["Fx.CSS"]
+			"deps": ["Fx", "Element.Event", "Element.Dimensions"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Scroll !== "undefined"; }
 		},
 		"Fx.Elements": {
-			"deps": ["Fx.CSS"]
+			"deps": ["Fx.CSS"],
+			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Elements !== "undefined"; }
 		}
 	},
 	"Drag": {
 		"Drag": {
-			"deps": ["Class.Extras","Element"]
+			"deps": ["Class.Extras", "Element.Event", "Element.Style"],
+			"test": function() { return typeof Drag !== "undefined"; }
 		},
 		"Drag.Move": {
-			"deps": ["Drag"]
+			"deps": ["Drag", "Element.Dimensions"],
+			"test": function() { return typeof Drag !== "undefined" && typeof Drag.Move !== "undefined"; }
 		}
 	},
 	"Utilities": {
 		"Hash.Cookie": {
-			"deps": ["Cookie"]
+			"deps": ["Cookie"],
+			"test": function() { return typeof Hash !== "undefined" && typeof Hash.Cookie !== "undefined"; }
 		},
 		"Color": {
-			"deps": ["Core"]
+			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"],
+			"test": function() { return typeof Color !== "undefined"; }
 		},
 		"Group": {
-			"deps": ["Class"]
+			"deps": ["Class"],
+			"test": function() { return typeof Group !== "undefined"; }
 		},
 		"Assets": {
-			"deps": ["Hash"]
+			"deps": ["Hash"],
+			"test": function() { return typeof Asset !== "undefined"; }
 		}
 	},
 	"Interface": {
 		"Sortables": {
-			"deps": ["Drag.Move"]
+			"deps": ["Drag.Move"],
+			"test": function() { return typeof Sortables !== "undefined"; }
 		},
 		"Tips": {
-			"deps": ["Class.Extras"]
+			"deps": ["Class.Extras"],
+			"test": function() { return typeof Tips !== "undefined"; }
 		},
 		"SmoothScroll": {
-			"deps": ["Fx.Scroll"]
+			"deps": ["Fx.Scroll"],
+			"test": function() { return typeof SmoothScroll !== "undefined"; }
 		},
 		"Slider": {
-			"deps": ["Drag"]
+			"deps": ["Drag"],
+			"test": function() { return typeof Slider !== "undefined"; }
 		},
 		"Scroller": {
-			"deps": ["Class.Extras"]
+			"deps": ["Class.Extras"],
+			"test": function() { return typeof Scroller !== "undefined"; }
 		},
 		"Accordion": {
-			"deps": ["Fx.Elements"]
+			"deps": ["Fx.Elements"],
+			"test": function() { return typeof Accordion !== "undefined"; }
 		}
 	}
 };
