@@ -3,7 +3,16 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 	this.coreBasePath = coreBasePath.match(/\/$/) ? coreBasePath : coreBasePath + '/';
 	this.moreBasePath = moreBasePath.match(/\/$/) ? moreBasePath : moreBasePath + '/';
 	this.included = [];
+	this.registered = {};
 	// private functions
+	function writeScript(path) {
+		var elm = document.createElement('script');
+		elm.setAttribute('type','text/javascript');
+		elm.setAttribute('src',path);
+		document.getElementsByTagName('head')[0].appendChild(elm);
+		this.included[this.included.length] = script;
+		elm = null;
+	}
 	function includeFrom(meta,basePath,script) {
 		if (this.isIncluded(script)) { return; }
 		var found = false;
@@ -33,15 +42,21 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 			}
 		}
 		var path = basePath + group + '/' + script + '.js';
-		var elm = document.createElement('script');
-		elm.setAttribute('type','text/javascript');
-		elm.setAttribute('src',path);
-		document.getElementsByTagName('head')[0].appendChild(elm);
-		this.included[this.included.length] = script;
-		elm = null;
+		writeScript.call(this,path);
 		return !!found;
 	}
-	function searchForIncludes() {
+	function includeRegistered(script) {
+		var found, group, name, elm;
+		var meta = this.registered;
+		for (name in meta) {
+			found = meta[name];
+			if (script === name) {
+				writeScript.call(this,found.path);
+			}
+		}
+		return !!found;
+	}
+	function searchForIncludes(meta) {
 		var found, group, name, metaGroup;
 		var meta = this.CoreMeta;
 		for (group in meta) {
@@ -57,26 +72,26 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 				}
 			}
 		}
-		meta = this.MoreMeta;
-		for (group in meta) {
-			if (meta.hasOwnProperty(group)) {
-				metaGroup = meta[group];
-				for (name in metaGroup) {
-					if (metaGroup.hasOwnProperty(name)) {
-						found = metaGroup[name];
-						if (found.test()) {
-							this.included[this.included.length] = name;
-						}
-					}
+	}
+	function searchRegistered(meta) {
+		var found, group, name;
+		for (name in meta) {
+			if (meta.hasOwnProperty(name)) {
+				found = meta[name];
+				if (found.test()) {
+					this.included[this.included.length] = name;
 				}
 			}
 		}
 	}
-	searchForIncludes.call(this);
+	searchForIncludes.call(this,this.CoreMeta);
+	searchForIncludes.call(this,this.MoreMeta);
+	searchRegistered.call(this,this.registered);
 	// define functions
 	this.include = function(script,onInclude,onError) {
 		var found = includeFrom.call(this,this.CoreMeta,this.coreBasePath,script);
 		if (!found) { found = includeFrom.call(this,this.MoreMeta,this.moreBasePath,script); }
+		if (!found) { found = includeRegistered.call(this,script); }
 		if (found) {
 			if (typeof onInclude === 'function') { onInclude(); }
 		} else {
@@ -93,7 +108,8 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		return false;
 	};
 	this.register = function(script) {
-		if (!this.isIncluded(script)) { this.included[this.included.length] = script; }
+		// { name: 'scriptName', deps: ['script','deps'], test: function() { this is my test }, path: '/path/to/script.js' }
+		this.registered[script.name] = script;
 	};
 };
 
