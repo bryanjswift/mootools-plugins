@@ -5,7 +5,7 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 	this.included = [];
 	this.registered = {};
 	// private functions
-	function writeScript(path) {
+	function writeScript(path,script) {
 		var elm = document.createElement('script');
 		elm.setAttribute('type','text/javascript');
 		elm.setAttribute('src',path);
@@ -13,8 +13,18 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		this.included[this.included.length] = script;
 		elm = null;
 	}
+	function includeDeps(found,script) {
+		var deps = found.deps;
+		var depsLength = deps.length;
+		var i;
+		for (i = 0; i < depsLength; i = i + 1) {
+			if (deps[i] !== script && deps[i] !== 'None') {
+				this.include(deps[i]);
+			}
+		}
+		return found;
+	}
 	function includeFrom(meta,basePath,script) {
-		if (this.isIncluded(script)) { return; }
 		var found = false;
 		var group, name, i, metaGroup;
 		for (group in meta) {
@@ -34,31 +44,28 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		if (!found) {
 			return found;
 		}
-		var deps = found.deps;
-		var depsLength = deps.length;
-		for (i = 0; i < depsLength; i = i + 1) {
-			if (deps[i] !== script && deps[i] !== 'None') {
-				this.include(deps[i]);
-			}
-		}
+		includeDeps.call(this,found,script);
 		var path = basePath + group + '/' + script + '.js';
-		writeScript.call(this,path);
+		writeScript.call(this,path,script);
 		return !!found;
 	}
 	function includeRegistered(script) {
 		var found, group, name, elm;
 		var meta = this.registered;
 		for (name in meta) {
-			found = meta[name];
 			if (script === name) {
-				writeScript.call(this,found.path);
+				found = meta[name];
 			}
 		}
+		if (!found) {
+			return found;
+		}
+		includeDeps.call(this,found,script);
+		writeScript.call(this,found.path,script);
 		return !!found;
 	}
 	function searchForIncludes(meta) {
 		var found, group, name, metaGroup;
-		var meta = this.CoreMeta;
 		for (group in meta) {
 			if (meta.hasOwnProperty(group)) {
 				metaGroup = meta[group];
@@ -89,6 +96,7 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 	searchRegistered.call(this,this.registered);
 	// define functions
 	this.include = function(script,onInclude,onError) {
+		if (this.isIncluded(script)) { return; }
 		var found = includeFrom.call(this,this.CoreMeta,this.coreBasePath,script);
 		if (!found) { found = includeFrom.call(this,this.MoreMeta,this.moreBasePath,script); }
 		if (!found) { found = includeRegistered.call(this,script); }
@@ -109,7 +117,12 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 	};
 	this.register = function(script) {
 		// { name: 'scriptName', deps: ['script','deps'], test: function() { this is my test }, path: '/path/to/script.js' }
-		this.registered[script.name] = script;
+		if (!this.isIncluded(script)) {
+			this.registered[script.name] = script;
+			return true;
+		} else {
+			return false;
+		}
 	};
 };
 
