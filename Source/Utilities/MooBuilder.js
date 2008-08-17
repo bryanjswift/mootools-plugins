@@ -115,6 +115,9 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		// { name: 'scriptName', deps: ['script','deps'], test: function() { this is my test }, path: '/path/to/script.js' }
 		if (!this.isIncluded(script)) {
 			this.registered[script.name] = script;
+			if (script.test()) {
+				this.included[script.name] = true;
+			}
 			return true;
 		} else {
 			return false;
