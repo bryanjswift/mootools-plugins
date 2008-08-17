@@ -2,7 +2,7 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 	// setup vars
 	this.coreBasePath = coreBasePath.match(/\/$/) ? coreBasePath : coreBasePath + '/';
 	this.moreBasePath = moreBasePath.match(/\/$/) ? moreBasePath : moreBasePath + '/';
-	this.included = [];
+	this.included = {};
 	this.registered = {};
 	// private functions
 	function writeScript(path,script) {
@@ -10,7 +10,7 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		elm.setAttribute('type','text/javascript');
 		elm.setAttribute('src',path);
 		document.getElementsByTagName('head')[0].appendChild(elm);
-		this.included[this.included.length] = script;
+		this.included[script] = true;
 		elm = null;
 	}
 	function includeDeps(found,script) {
@@ -72,8 +72,8 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 				for (name in metaGroup) {
 					if (metaGroup.hasOwnProperty(name)) {
 						found = metaGroup[name];
-						if (found.test()) {
-							this.included[this.included.length] = name;
+						if (found.test() && !this.isIncluded(name)) {
+							this.included[name] = true;
 						}
 					}
 				}
@@ -85,15 +85,17 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		for (name in meta) {
 			if (meta.hasOwnProperty(name)) {
 				found = meta[name];
-				if (found.test()) {
-					this.included[this.included.length] = name;
+				if (found.test() && !this.isIncluded(name)) {
+					this.included[name] = true;
 				}
 			}
 		}
 	}
-	searchForIncludes.call(this,this.CoreMeta);
-	searchForIncludes.call(this,this.MoreMeta);
-	searchRegistered.call(this,this.registered);
+	function findIncludes() {
+		searchForIncludes.call(this,this.CoreMeta);
+		searchForIncludes.call(this,this.MoreMeta);
+		searchRegistered.call(this,this.registered);
+	}
 	// define functions
 	this.include = function(script,onInclude,onError) {
 		if (this.isIncluded(script)) { return; }
@@ -107,13 +109,7 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 		}
 	};
 	this.isIncluded = function(script) {
-		var included = this.included;
-		var length = included.length;
-		var i;
-		for (i = 0; i < length; i = i + 1) {
-			if (included[i] === script) { return true; }
-		}
-		return false;
+		return !!this.included[script];
 	};
 	this.register = function(script) {
 		// { name: 'scriptName', deps: ['script','deps'], test: function() { this is my test }, path: '/path/to/script.js' }
@@ -124,6 +120,10 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 			return false;
 		}
 	};
+	this.refreshIncludes= function() {
+		findIncludes.call(this);
+	};
+	findIncludes.call(this);
 };
 
 MooBuilder.prototype.CoreMeta = {

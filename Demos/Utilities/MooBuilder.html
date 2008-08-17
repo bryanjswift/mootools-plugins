@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"> <!-- ends in footer.php -->
+	<head>
+		<title>MooBuilder.js Test Page</title>
+		<script src="../assets/js/mootools-Element.Event.js"></script>
+		<script type="text/javascript" src="../../Source/Utilities/MooBuilder.js"></script>
+		<style type="text/css">
+			div { float: left; }
+		</style>
+		<script type="text/javascript">
+			var builder = new MooBuilder('http://static.bryanjswift.com/mootools-core/Source','http://static.bryanjswift.com/mootools-more/Source');
+		</script>
+	</head>
+	<body>
+		<h1>MooBuilder.js Test Page</h1>
+		<h2>Modules Loaded</h2>
+		<ul id="modules">
+			<li>junk</li>
+		</ul>
+		<script type="text/javascript">
+			function writeModules() {
+				builder.refreshIncludes();
+				var modules = document.getElementById('modules');
+				modules.innerHTML = '';
+				var module, li;
+				for (module in builder.included) {
+					li = document.createElement('li');
+					li.innerHTML = module;
+					modules.appendChild(li);
+				}
+				modules = null;
+				li = null;
+			}
+			writeModules();
+		</script>
+	</body>
+</html>
+
