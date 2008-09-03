@@ -41,7 +41,7 @@ define( 'MARKDOWNEXTRA_VERSION',  "1.2.2" ); # Sat 21 Jun 2008
 
 # Change to false to remove Markdown from posts and/or comments.
 @define( 'MARKDOWN_WP_POSTS',      true );
-@define( 'MARKDOWN_WP_COMMENTS',   true );
+@define( 'MARKDOWN_WP_COMMENTS',   false );
 
 
 
@@ -77,6 +77,7 @@ Author URI: http://www.michelf.com/
 */
 
 if (isset($wp_version)) {
+	@define( 'IS_MARKDOWN_WP',       true );
 	# More details about how it works here:
 	# <http://www.michelf.com/weblog/2005/wordpress-text-flow-vs-markdown/>
 	
@@ -86,10 +87,10 @@ if (isset($wp_version)) {
 	# - Add paragraph tag around the excerpt, but remove it for the excerpt rss.
 	if (MARKDOWN_WP_POSTS) {
 		remove_filter('the_content',     'wpautop');
-        remove_filter('the_content_rss', 'wpautop');
+		remove_filter('the_content_rss', 'wpautop');
 		remove_filter('the_excerpt',     'wpautop');
 		add_filter('the_content',     'Markdown', 6);
-        add_filter('the_content_rss', 'Markdown', 6);
+		add_filter('the_content_rss', 'Markdown', 6);
 		add_filter('get_the_excerpt', 'Markdown', 6);
 		add_filter('get_the_excerpt', 'trim', 7);
 		add_filter('the_excerpt',     'mdwp_add_p');
@@ -2658,9 +2659,10 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			array(&$this, '_appendFootnotes_callback'), $text);
 	
 		if (!empty($this->footnotes_ordered)) {
+			$postId = "";
 			$text .= "\n\n";
 			$text .= "<div class=\"footnotes\">\n";
-			$text .= "<hr". MARKDOWN_EMPTY_ELEMENT_SUFFIX ."\n";
+			# $text .= "<hr". MARKDOWN_EMPTY_ELEMENT_SUFFIX ."\n";
 			$text .= "<ol>\n\n";
 			
 			$attr = " rev=\"footnote\"";
@@ -2678,11 +2680,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			
 			while (!empty($this->footnotes_ordered)) {
 				$footnote = reset($this->footnotes_ordered);
+				if (IS_MARKDOWN_WP) { $postId = ':' . sha1($footnote); }
 				$note_id = key($this->footnotes_ordered);
 				unset($this->footnotes_ordered[$note_id]);
 				
 				$footnote .= "\n"; # Need to append newline before parsing.
-				$footnote = $this->runBlockGamut("$footnote\n");				
+				$footnote = $this->runBlockGamut("$footnote\n");
 				$footnote = preg_replace_callback('{F\x1Afn:(.*?)\x1A:}', 
 					array(&$this, '_appendFootnotes_callback'), $footnote);
 				
@@ -2690,14 +2693,14 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 				$note_id = $this->encodeAttribute($note_id);
 				
 				# Add backlink to last paragraph; create new paragraph if needed.
-				$backlink = "<a href=\"#fnref:$note_id\"$attr>&#8617;</a>";
+				$backlink = "<a href=\"#fnref$postId:$note_id\"$attr>&#8617;</a>";
 				if (preg_match('{</p>$}', $footnote)) {
 					$footnote = substr($footnote, 0, -4) . "&#160;$backlink</p>";
 				} else {
 					$footnote .= "\n\n<p>$backlink</p>";
 				}
 				
-				$text .= "<li id=\"fn:$note_id\">\n";
+				$text .= "<li id=\"fn$postId:$note_id\">\n";
 				$text .= $footnote . "\n";
 				$text .= "</li>\n\n";
 			}
@@ -2732,10 +2735,12 @@ class MarkdownExtra_Parser extends Markdown_Parser {
 			
 			$attr = str_replace("%%", $num, $attr);
 			$node_id = $this->encodeAttribute($node_id);
+			$postId = "";
+			if (IS_MARKDOWN_WP) { $postId = ':' .sha1($this->footnotes_ordered[$num]); }
 			
 			return
-				"<sup id=\"fnref:$node_id\">".
-				"<a href=\"#fn:$node_id\"$attr>$num</a>".
+				"<sup id=\"fnref$postId:$node_id\">".
+				"<a href=\"#fn$postId:$node_id\"$attr>$num</a>".
 				"</sup>";
 		}
 		
