@@ -1,7 +1,6 @@
-/* extern Class, Events, Options */
+/*extern Class, Events, Options, Event, Element, StyledForm */
 if (typeof StyledForm === 'undefined') { StyledForm = {}; }
 
-// Class to represent options of a styled select or multi-select
 StyledForm.SelectOption = new Class({
 	Implements: [Events,Options],
 	options: {
