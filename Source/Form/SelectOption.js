@@ -18,7 +18,8 @@ StyledForm.SelectOption = new Class({
 	value: null,
 	initialize: function(option,options) {
 		this.setOptions(options);
-		this.option = $(option);
+		option = $(option);
+		this.option = option;
 		this.events = {
 			deselect: this.deselect.bind(this),
 			select: this.select.bind(this)
