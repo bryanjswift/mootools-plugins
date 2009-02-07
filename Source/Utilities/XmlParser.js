@@ -1,6 +1,6 @@
 /*
-Script: Fx.Position.js
-	Position elements to certain coordinates with a transition.
+Script: XmlParser.js
+	Parse an xml document into a JavaScript object
 
 License:
 	MIT-style license. 
