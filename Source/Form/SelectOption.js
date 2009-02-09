@@ -34,6 +34,7 @@ StyledForm.SelectOption = new Class({
 			}
 		});
 		this.element.store(this.options.storageName,this);
+		option.store(this.options.storageName,this);
 	},
 	deselect: function(e) {
 		var evt = e ? new Event(e).stop() : null;
