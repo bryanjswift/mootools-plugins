@@ -18,6 +18,15 @@ Class to represent option elements in a styled select or multi-select element
 * selected						- (*boolean*: defaults to false) true if this option starts selected
 * storageName					- (*string*: defaults to 'optionData') string which can be used to retrieve SelectOption from the new element
 
+### Events:
+
+* onDeselect					- (*function*) Fired when the option is explicitly deselected
+* onDisable						- (*function*) Fired when the option is disabled
+* onEnable						- (*function*) Fired when the option is enabled
+* onHighlight					- (*function*) Fired when the option is highlighted
+* onRemoveHighlight		- (*function*) Fired when the option's highlight is removed
+* onSelect						- (*function*) Fired when the option gets selected
+
 ### Returns:
 
 * (*object*) a new SelectOption
