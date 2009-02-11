@@ -55,9 +55,11 @@ StyledForm.SelectOption = new Class({
 	},
 	disable: function() {
 		this.element.removeEvents({mouseenter:this.bound.highlght, mouseleave:this.bound.removeHighlight});
+		this.fireEvent('onDisable',this);
 	},
 	enable: function() {
 		this.element.addEvents({mouseenter:this.bound.highlght, mouseleave:this.bound.removeHighlight});
+		this.fireEvent('onEnable',this);
 	},
 	highlight: function() {
 		this.element.addClass(this.config.highlightedClass);
