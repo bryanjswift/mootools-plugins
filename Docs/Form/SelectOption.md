@@ -14,10 +14,8 @@ Class to represent option elements in a styled select or multi-select element
 
 ### Options:
 
-* optionClass					- (*string*: defaults to 'option') class to add to the new element to display
 * optionTag						- (*string*: defaults to 'li') type of element used to mimic an option element
 * selected						- (*boolean*: defaults to false) true if this option starts selected
-* selectedClass				- (*string*: defaults to 'selected') string to add to the new element when this SelectOption is selected
 * storageName					- (*string*: defaults to 'optionData') string which can be used to retrieve SelectOption from the new element
 
 ### Returns:
@@ -51,6 +49,48 @@ Sets element references to null and prepares for document unload
 ### Syntax:
 
 	option.destroy();
+
+
+
+SelectOption Method: disable {#SelectOption:disable}
+----------------------------
+
+Removes mouse events from the option element
+
+### Syntax:
+
+	option.disable();
+
+
+SelectOption Method: enable {#SelectOption:enable}
+---------------------------
+
+Adds mouse events to the option element
+
+### Syntax:
+
+	option.enable();
+
+
+
+SelectOption Method: highlight {#SelectOption:highlight}
+------------------------------
+
+Updates object state to signify being highlighted
+
+### Syntax:
+
+	option.highlight();
+
+
+
+SelectOption Method: removeHighlight {#SelectOption:removeHighlight}
+
+Updates object state to signify default state
+
+### Syntax:
+
+	option.removeHighlight();
 
 
 
