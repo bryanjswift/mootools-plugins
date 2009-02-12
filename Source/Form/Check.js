@@ -43,6 +43,7 @@ StyledForm.Check = new Class({
 		this.element.wraps(input);
 		if (this.options.checked || input.get('checked')) { this.toggle(); }
 		if (this.options.disabled || input.get('disabled')) { this.disable(); }
+		input.store('StyledForm.Check::data',this);
 		this.fireEvent('onCreate',this);
 	},
 	disable: function() {
