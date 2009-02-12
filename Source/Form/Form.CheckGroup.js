@@ -15,7 +15,7 @@ Form.CheckGroup = new Class({
 		var checkOptions = this.options.checkOptions;
 		var checkboxes = group.getElements('input[type=checkbox]');
 		checkboxes.each(function(checkbox) {
-			var check = checkbox.retrieve('Form.Check::data') || new Form.Check(check,checkOptions);
+			var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,checkOptions);
 			checks.push(check);
 		});
 	},
