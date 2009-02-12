@@ -8,14 +8,14 @@ Form.CheckGroup = new Class({
 	},
 	checks: [],
 	initialize: function(group,options) {
-		if (!StyledForm.Check) { throw 'required Class StyledForm.Check not found'; }
+		if (!Form.Check) { throw 'required Class Form.Check not found'; }
 		this.setOptions(options);
 		group = $(group);
 		var checks = this.checks;
 		var checkOptions = this.options.checkOptions;
 		var checkboxes = group.getElements('input[type=checkbox]');
 		checkboxes.each(function(checkbox) {
-			var check = checkbox.retrieve('StyledForm.Check::data') || new StyledForm.Check(check,checkOptions);
+			var check = checkbox.retrieve('Form.Check::data') || new Form.Check(check,checkOptions);
 			checks.push(check);
 		});
 	},
