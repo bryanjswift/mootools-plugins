@@ -17,7 +17,13 @@ Form.CheckGroup = new Class({
 		checkboxes.each(function(checkbox) {
 			var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,checkOptions);
 			checks.push(check);
+			checkbox.store('Form.CheckGroup::data',this);
 		});
+	},
+	addCheck: function(checkbox) {
+		var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,this.options.checkOptions);
+		checkbox.store('Form.CheckGroup::data',this);
+		this.checks.push(check);
 	},
 	checkAll: function() {
 		var checks = this.checks;
