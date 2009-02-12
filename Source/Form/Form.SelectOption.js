@@ -1,7 +1,7 @@
-/*extern Class, Events, Options, Event, Element, StyledForm */
-if (typeof StyledForm === 'undefined') { StyledForm = {}; }
+/*extern Class, Events, Options, Event, Element, Form */
+if (typeof Form === 'undefined') { Form = {}; }
 
-StyledForm.SelectOption = new Class({
+Form.SelectOption = new Class({
 	Implements: [Events,Options],
 	options: {
 		optionTag: 'li',

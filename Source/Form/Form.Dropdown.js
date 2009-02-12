@@ -1,7 +1,7 @@
-/*extern Class, Events, Options, Event, Element, StyledForm */
-if (typeof StyledForm === 'undefined') { StyledForm = {}; }
+/*extern Class, Events, Options, Event, Element, Form */
+if (typeof Form === 'undefined') { Form = {}; }
 
-StyledForm.Dropdown = new Class({
+Form.Dropdown = new Class({
 	Implements: [Events,Options],
 	options: {
 		excludedValues: [],

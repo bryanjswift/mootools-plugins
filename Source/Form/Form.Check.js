@@ -1,7 +1,7 @@
-/*extern Class, Events, Options, StyledForm, $, Element */
-if (typeof StyledForm === 'undefined') { StyledForm = {}; }
+/*extern Class, Events, Options, Form, $, Element */
+if (typeof Form === 'undefined') { Form = {}; }
 
-StyledForm.Check = new Class({
+Form.Check = new Class({
 	Implements: [Events,Options],
 	options: {
 		checked: false,
