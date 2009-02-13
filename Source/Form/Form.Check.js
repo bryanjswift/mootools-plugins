@@ -30,7 +30,6 @@ Form.Check = new Class({
 		var bound = this.bound;
 		input = this.input = $(input);
 		this.label = document.getElement('label[for=' + input.get('id'));
-		if (this.label) { this.label.addEvent('click',bound.toggle); }
 		this.element = new Element('div',{
 			'class': input.get('class') + ' check',
 			id: input.get('id') + 'Check',
@@ -45,7 +44,6 @@ Form.Check = new Class({
 		if (this.options.disabled || input.get('disabled')) { this.disable(); }
 		input.store('Form.Check::data',this).addEvents({
 			blur: bound.removeHighlight,
-			click: bound.toggle,
 			focus: bound.highlight
 		});
 		this.fireEvent('onCreate',this);
@@ -70,8 +68,10 @@ Form.Check = new Class({
 		this.element.removeClass(this.config.highlightedClass);
 		this.fireEvent('onRemoveHighlight',this);
 	},
-	toggle: function() {
+	toggle: function(e) {
+		var evt;
 		if (this.disabled) { return; }
+		if (e) { evt = new Event(e).stop(); }
 		if (this.checked) {
 			this.element.removeClass(this.config.checkedClass);
 			this.input.erase('checked');
