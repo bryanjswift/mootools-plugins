@@ -11,6 +11,7 @@ Form.CheckGroup = new Class({
 		if (!Form.Check) { throw 'required Class Form.Check not found'; }
 		this.setOptions(options);
 		group = $(group);
+		if (!group) { return this; }
 		var checks = this.checks;
 		var checkOptions = this.options.checkOptions;
 		var checkboxes = group.getElements('input[type=checkbox]');

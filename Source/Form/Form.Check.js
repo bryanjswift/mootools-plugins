@@ -43,7 +43,11 @@ Form.Check = new Class({
 		this.element.wraps(input);
 		if (this.options.checked || input.get('checked')) { this.toggle(); }
 		if (this.options.disabled || input.get('disabled')) { this.disable(); }
-		input.store('Form.Check::data',this);
+		input.store('Form.Check::data',this).addEvents({
+			blur: bound.removeHighlight,
+			click: bound.toggle,
+			focus: bound.highlight
+		});
 		this.fireEvent('onCreate',this);
 	},
 	disable: function() {
@@ -74,7 +78,7 @@ Form.Check = new Class({
 			this.checked = false;
 		} else {
 			this.element.addClass(this.config.checkedClass);
-			this.input.set('checked','checked');
+			this.input.set('checked','checked').focus();
 			this.checked = true;
 		}
 		this.fireEvent(this.checked ? 'onCheck' : 'onUncheck',this);
