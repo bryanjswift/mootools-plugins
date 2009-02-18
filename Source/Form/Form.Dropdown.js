@@ -15,7 +15,7 @@ Form.Dropdown = new Class({
 	element: null,
 	highlighted: null,
 	input: null,
-	open: false,
+	open: true,
 	selected: null,
 	selection: null,
 	typed: {lastKey: null, value: null, timer: null, pressed: null, shortlist: [], startkey: null},
@@ -28,7 +28,7 @@ Form.Dropdown = new Class({
 			collapse: this.collapse.bind(this),
 			expand: this.expand.bind(this),
 			focus: this.focus.bind(this),
-			highlightOption: this.highlightOptions.bind(this),
+			highlightOption: this.highlightOption.bind(this),
 			mouseenterDropdown: this.mouseenterDropdown.bind(this),
 			mouseleaveDropdown: this.mouseleaveDropdown.bind(this),
 			mousemove: this.mousemove.bind(this),
@@ -39,10 +39,10 @@ Form.Dropdown = new Class({
 		this.value = this.options.initialValue;
 		var dropdownOptions = this.dropdownOptions;
 		var selectOptions = this.options.selectOptions;
-		var optionsList = this.initializeCreateElements();
+		var optionsList = this.initializeCreateElements(select);
 		var optionElements = select.getElements('option');
 		optionElements.each(function(opt) {
-			var option = new StyledForm.SelectOption(opt,selectOptions);
+			var option = new Form.SelectOption(opt,selectOptions);
 			option.addEvents({
 				'onHighlight':this.bound.highlightOption,
 				'onRemoveHighlight':this.bound.removeHighlightOption,
@@ -52,8 +52,9 @@ Form.Dropdown = new Class({
 			dropdownOptions.push(option);
 			optionsList.adopt(option.element);
 		},this);
-		if (!this.selected) { this.selected = optionElements.getFirst().retrieve('optionData'); }
-		this.dropdown.replaces(select);
+		if (!this.selected) { optionElements[0].retrieve('optionData').select(); }
+		this.element.replaces(select);
+		this.toggle();
 		document.addEvent('click', this.bound.collapse);
 	},
 	initializeCreateElements: function(select) {
@@ -87,8 +88,11 @@ Form.Dropdown = new Class({
 	},
 	blur: function(e) { },
 	collapse: function() {
+		if (!this.open) { return; }
 		this.toggle();
-		this.fireEvent('onCollapse',this);
+	},
+	deselect: function(option) {
+		option.deselect();
 	},
 	destroy: function() {
 		this.element = null;
@@ -96,8 +100,8 @@ Form.Dropdown = new Class({
 		this.input = null;
 	},
 	expand: function() {
+		if (this.open) { return; }
 		this.toggle();
-		this.fireEvent('onExpand',this)
 	},
 	focus: function(e) { this.expand(); },
 	foundMatch: function() {
@@ -249,6 +253,7 @@ Form.Dropdown = new Class({
 		return typed;
 	},
 	select: function(option,e) {
+		this.dropdownOptions.each(this.deselect);
 		this.selection.set('html',option.element.get('html'));
 		var oldValue = this.value;
 		this.value = option.value;
@@ -267,10 +272,12 @@ Form.Dropdown = new Class({
 			this.element.addClass('active').addClass('dropdown-active');
 			this.selected.highlight();
 			this.element.addEvents(events);
+			this.fireEvent('onExpand',this)
 		} else { // closing
 			this.element.removeClass('active').removeClass('dropdown-active');
 			this.selected.removeHighlight();
 			this.element.removeEvents(events);
+			this.fireEvent('onCollapse',this);
 		}
 	}
 });
