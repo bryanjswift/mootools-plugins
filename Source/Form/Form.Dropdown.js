@@ -29,6 +29,8 @@ Form.Dropdown = new Class({
 			expand: this.expand.bind(this),
 			focus: this.focus.bind(this),
 			highlightOption: this.highlightOption.bind(this),
+			keydown: this.keydown.bind(this),
+			keypress: this.keypress.bind(this),
 			mouseenterDropdown: this.mouseenterDropdown.bind(this),
 			mouseleaveDropdown: this.mouseleaveDropdown.bind(this),
 			mousemove: this.mousemove.bind(this),
@@ -54,8 +56,10 @@ Form.Dropdown = new Class({
 		},this);
 		if (!this.selected) { optionElements[0].retrieve('optionData').select(); }
 		this.element.replaces(select);
-		this.toggle();
 		document.addEvent('click', this.bound.collapse);
+		var eventName = Browser.Engine.trident || Browser.Engine.webkit ? 'keydown' : 'keypress';
+		var target = Browser.Engine.trident ? $(document.body) : window;
+		target.addEvent('keydown',this.bound.keydown).addEvent(eventName,this.bound.keypress);
 	},
 	initializeCreateElements: function(select) {
 		var id = select.get('id');
@@ -152,7 +156,7 @@ Form.Dropdown = new Class({
 					previous = current.getParent().getLast();
 				}
 				if (typed.pressed > 0) { typed.pressed = typed.pressed - 1; }
-				this.fireEvent('onKeyboardHighlight',previous.retrieve('optionData'));
+				this.fireEvent('onKeyboardHighlight',previous.retrieve('optionData').highlight());
 				break;
 			case 40: // down
 			case 39: // right
@@ -162,12 +166,12 @@ Form.Dropdown = new Class({
 					next = current.getParent().getFirst();
 				}
 				if (typed.shortlist.length > 0) { typed.pressed = typed.pressed + 1; }
-				this.fireEvent('onKeyboardHighlight',next.retrieve('optionData'));
+				this.fireEvent('onKeyboardHighlight',next.retrieve('optionData').highlight());
 				break;
 			case 13: // enter
 				evt.stop();
 			case 9: // tab - skips the stop event but clicks the item
-				current.select();
+				current.retrieve('optionData').select();
 				break;
 			case 27: // esc
 				evt.stop();
@@ -261,6 +265,7 @@ Form.Dropdown = new Class({
 		this.selected = option;
 		this.fireEvent('onSelect',[option]);
 		if (oldValue !== this.value) { this.fireEvent('onChange',[this]); }
+		this.collapse();
 	},
 	toggle: function(e) {
 		var evt = e ? new Event(e).stop() : null;
