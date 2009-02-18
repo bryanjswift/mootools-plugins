@@ -35,7 +35,7 @@ Form.SelectOption = new Class({
 			'class': (option.get('class') + ' ' + this.config.optionClass).trim(),
 			'html': option.get('html'),
 			'events': {
-				click: this.bound.select
+				click: this.bound.select,
 				mouseenter: this.bound.highlight,
 				mouseleave: this.bound.removeHighlight
 			}
