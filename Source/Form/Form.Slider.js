@@ -27,6 +27,14 @@ Form.Slider = new Class({
 		if (!options || !options.onMoveTo) { this.addEvent('onMoveTo',this.moveContent.bindWithEvent(this,[false])); }
 		this.setOptions(options);
 		element = $(element);
+		var showButtons = this.options.showButtons;
+		var vertical = this.options.vertical;
+		var positionDimension = vertical ? 'top' : 'left';
+		var dimension = vertical ? 'height' : 'width';
+		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
+		var xy = vertical ? 'y' : 'x';
+		var size = element.getStyle(dimension).toInt();
+		if (element.getScrollSize()[xy] <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
 			buttonUp: this.clearButtonHoldInterval.bind(this),
@@ -37,13 +45,6 @@ Form.Slider = new Class({
 			scrubberUp: this.stopDrag.bind(this),
 			trackClick: this.centerScrubberForClick.bind(this)
 		};
-		var showButtons = this.options.showButtons;
-		var vertical = this.options.vertical;
-		var positionDimension = vertical ? 'top' : 'left';
-		var dimension = vertical ? 'height' : 'width';
-		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
-		var xy = vertical ? 'y' : 'x';
-		var size = element.getStyle(dimension).toInt();
 		var wrapper = this.initializeWrapper(element,dimension,size);
 		var scrollbar = this.initializeScrollbar();
 		wrapper.getParent().adopt(scrollbar); // attached outside wrapper because of hidden overflow
@@ -73,7 +74,7 @@ Form.Slider = new Class({
 	},
 	initializeScrollbar: function() {
 		var scrollbar = new Element('div',{
-			'class': 'scrollbar',
+			'class': 'scrollbar'
 		});
 		var back, forward;
 		if (this.options.showButtons) {
