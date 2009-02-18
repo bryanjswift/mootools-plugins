@@ -5,6 +5,7 @@ Form.Slider = new Class({
 	Implements:[Events,Options],
 	options: {
 		animate: true,
+		duration: 500,
 		showButtons: true,
 		snapSize: null,
 		vertical: true
@@ -14,17 +15,23 @@ Form.Slider = new Class({
 	dimension: null,
 	dragProperties: {on:false,downPosition:null},
 	element: null,
+	pageSize: null,
 	position: 0,
 	scrollbar: null,
 	scrubber: null,
+	trackSize: null,
+	wrapper: null,
 	xy: null,
 	initialize: function(element,options) {
+		if (!options || !options.onSlideTo) { this.addEvent('onSlideTo',this.moveContent.bindWithEvent(this,[true])); }
+		if (!options || !options.onMoveTo) { this.addEvent('onMoveTo',this.moveContent.bindWithEvent(this,[false])); }
+		this.setOptions(options);
 		element = $(element);
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
 			buttonUp: this.clearButtonHoldInterval.bind(this),
 			forwardClick: this.pageForward.bind(this),
-			mouseWheel: this.scroll.bind(this),
+			mousewheel: this.scroll.bind(this),
 			scrubberDown: this.startDrag.bind(this),
 			scrubberDrag: this.drag.bind(this),
 			scrubberUp: this.stopDrag.bind(this),
@@ -45,7 +52,7 @@ Form.Slider = new Class({
 		var trackSize = scrollbar.getSize()[xy] - backSize - forwardSize;
 		var trackStyles = vertical ? {height:trackSize,position:'absolute','top':backSize} : {width:trackSize,position:'absolute','left':backSize};
 		this.track = scrollbar.getElement('div.scrollbarTrack').setStyles(trackStyles);
-		this.ratio = trackSize / element.getScrollSize()[xy];
+		this.ratio = wrapper.getSize()[xy] / element.getScrollSize()[xy];
 		var scrubber = scrollbar.getElement('div.scrollbarScrubber');
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		sides.each(function(side) {
@@ -55,9 +62,10 @@ Form.Slider = new Class({
 		// setup values on instance
 		this.dimension = positionDimension;
 		this.element = element;
-		this.limit = trackSize - scrubberSize;
+		this.limit = trackSize - scrubber.getSize()[xy];
 		this.pageSize = size;
 		this.scrubber = scrubber;
+		this.trackSize = trackSize;
 		this.wrapper = wrapper;
 		this.xy = xy;
 		// store data
@@ -97,6 +105,10 @@ Form.Slider = new Class({
 			mouseleave: scrubber.removeClass.pass(['scrollbarScrubberOver'],scrubber),
 			mousedown: scrubber.addClass.pass(['scrollbarScrubberDown'],scrubber),
 			mouseup: scrubber.removeClass.pass(['scrollbarScrubberDown'],scrubber)
+		}).set('tween',{
+			duration: this.options.duration,
+			link:'cancel',
+			transition: 'linear'
 		});
 		if (this.options.showButtons) {
 			forward = new Element('div',{'class':'scrollbarForward',events:{mousedown:this.bound.forwardClick,mouseup:this.bound.buttonUp}});
@@ -127,10 +139,15 @@ Form.Slider = new Class({
 		});
 		var elementStyles = [0,0,0,0,0,0].associate(properties);
 		elementStyles[dimension] = 'auto';
+		elementStyles.position = 'relative';
 		wrapperStyles.overflow = 'hidden';
 		wrapperStyles[dimension] = size;
 		var wrapper = new Element('div',{
 			'class':'scrollbarWrapper',
+			events: {
+				mouseenter: document.addEvent.pass(['mousewheel',this.bound.mousewheel],document),
+				mouseleave: document.removeEvent.pass(['mousewheel',this.bound.mousewheel],document)
+			},
 			styles: wrapperStyles
 		});
 		this.wrapper = wrapper;
@@ -151,10 +168,10 @@ Form.Slider = new Class({
 	},
 	scroll: function(e) {
 		var evt = new Event(e);
-		if (evt.wheel > 0 && this.scrubberPosition != this.scrubberLimits[this.options.horizontal ? 'left' : 'top']) {
+		if (evt.wheel > 0 && this.position != 0) {
 			// wheel up
 			this.pageBackward(e);
-		} else if (evt.wheel < 0 && this.scrubberPosition != this.scrubberLimits[this.options.horizontal ? 'right' : 'bottom']) {
+		} else if (evt.wheel < 0 && this.position != this.limit) {
 			// wheel down
 			this.pageForward(e);
 		}
@@ -164,15 +181,23 @@ Form.Slider = new Class({
 		var position = evt.page[this.xy] - this.track.getPosition()[this.xy] - this.dragProperties.downPosition;
 		this.setScrubberPosition(position,false);
 	},
+	moveContent: function(ratio,animate) {
+		animate = $defined(animate) ? animate : this.options.animate;
+		// fireEvent appears to not pass args which evaluate to false
+		if (typeof ratio !== 'number' || !ratio) { ratio = 0; }
+		var list = this.element;
+		var position = -ratio * list.getScrollSize()[this.xy];
+		list.get('tween')[animate ? 'start' : 'set'](this.dimension,position);
+	},
 	pageBackward: function(e) {
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position - (this.track.getSize()[this.xy] * 0.25));
-		this.buttonHoldInterval = this.pageBackward.delay(150,this);
+		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageBackward.delay(150,this,[e]); }
 	},
 	pageForward: function(e) {
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position + (this.track.getSize()[this.xy] * 0.25));
-		this.buttonHoldInterval = this.pageForward.delay(150,this);
+		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this,[e]); }
 	},
 	startDrag: function(e) {
 		var evt = new Event(e);
@@ -198,9 +223,10 @@ Form.Slider = new Class({
 			position = this.limit;
 		}
 		this.position = position;
-		var positionRatio = position / this.trackSize;
+		var ratio = position / this.trackSize;
 		var tween = this.scrubber.get('tween');
+		tween.cancel();
 		tween[animate ? 'start' : 'set'](this.dimension,position);
-		this.fireEvent(animate ? 'onSlideTo' : 'onMoveTo',[positionRatio,this]);
+		this.fireEvent(animate ? 'onSlideTo' : 'onMoveTo',[ratio,this]);
 	}
 });
