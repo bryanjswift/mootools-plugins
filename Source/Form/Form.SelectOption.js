@@ -54,11 +54,11 @@ Form.SelectOption = new Class({
 		this.option = null;
 	},
 	disable: function() {
-		this.element.removeEvents({mouseenter:this.bound.highlght, mouseleave:this.bound.removeHighlight});
+		this.element.removeEvents({mouseenter:this.bound.highlight, mouseleave:this.bound.removeHighlight});
 		this.fireEvent('onDisable',this);
 	},
 	enable: function() {
-		this.element.addEvents({mouseenter:this.bound.highlght, mouseleave:this.bound.removeHighlight});
+		this.element.addEvents({mouseenter:this.bound.highlight, mouseleave:this.bound.removeHighlight});
 		this.fireEvent('onEnable',this);
 	},
 	highlight: function() {
