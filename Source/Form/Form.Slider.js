@@ -6,8 +6,9 @@ Form.Slider = new Class({
 	options: {
 		animate: true,
 		duration: 500,
+		scrollbar: false,
 		showButtons: true,
-		snapSize: null,
+		snapSize: false,
 		vertical: true
 	},
 	bound: {},
@@ -73,12 +74,10 @@ Form.Slider = new Class({
 		element.store('Form.Slider::data',this);
 	},
 	initializeScrollbar: function() {
-		var scrollbar = new Element('div',{
-			'class': 'scrollbar'
-		});
+		var scrollbar = this.options.scrollbar || new Element('div',{'class':'scrollbar'});
 		var back, forward;
 		if (this.options.showButtons) {
-			back = new Element('div',{'class':'scrollbarBack',events:{mousedown:this.bound.backClick,mouseup:this.bound.buttonUp}});
+			back = this.getCreateElement(scrollbar,'scrollbarBack').addEvents({mousedown:this.bound.backClick,mouseup:this.bound.buttonUp});
 			back.addEvents({
 				mouseenter: back.addClass.pass(['scrollbarBackOver'],back),
 				mouseleave: back.removeClass.pass(['scrollbarBackOver'],back),
@@ -88,19 +87,9 @@ Form.Slider = new Class({
 		} else {
 			back = null;
 		}
-		var track = new Element('div',{
-			'class':'scrollbarTrack',
-			events: {
-				click: this.bound.trackClick
-			}
-		});
-		var scrubber = new Element('div',{
-			'class':'scrollbarScrubber',
-			events: {
-				click: function(e) { var evt = new Event(e); evt.stop(); },
-				mousedown: this.bound.scrubberDown
-			}
-		});
+		// get or create new track then add events
+		var track = this.getCreateElement(scrollbar,'scrollbarTrack').addEvents({click:this.bound.trackClick});
+		var scrubber = this.getCreateElement(scrollbar,'scrollbarScrubber').addEvents({click:this.stopEvent,mousedown:this.bound.scrubberDown});
 		scrubber.addEvents({
 			mouseenter: scrubber.addClass.pass(['scrollbarScrubberOver'],scrubber),
 			mouseleave: scrubber.removeClass.pass(['scrollbarScrubberOver'],scrubber),
@@ -112,7 +101,7 @@ Form.Slider = new Class({
 			transition: 'linear'
 		});
 		if (this.options.showButtons) {
-			forward = new Element('div',{'class':'scrollbarForward',events:{mousedown:this.bound.forwardClick,mouseup:this.bound.buttonUp}});
+			forward = this.getCreateElement(scrollbar,'scrollbarForward').addEvents({mousedown:this.bound.forwardClick,mouseup:this.bound.buttonUp});
 			forward.addEvents({
 				mouseenter: forward.addClass.pass(['scrollbarForwardOver'],forward),
 				mouseleave: forward.removeClass.pass(['scrollbarForwardOver'],forward),
@@ -182,6 +171,9 @@ Form.Slider = new Class({
 		var position = evt.page[this.xy] - this.track.getPosition()[this.xy] - this.dragProperties.downPosition;
 		this.setScrubberPosition(position,false);
 	},
+	getCreateElement: function(scrollbar,clazz) {
+		return this.options.scrollbar ? scrollbar.getElement('.' + clazz).removeEvents() : new Element('div',{'class':clazz});
+	},
 	moveContent: function(ratio,animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
 		// fireEvent appears to not pass args which evaluate to false
@@ -216,6 +208,7 @@ Form.Slider = new Class({
 		drag.downPosition = null;
 		document.removeEvents({mousemove:this.bound.scrubberDrag, mouseup:this.bound.scrubberUp});
 	},
+	stopEvent: function(e) { var evt = new Event(e); evt.stop(); },
 	setScrubberPosition: function(position, animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
 		if (position < 0) {
