@@ -145,6 +145,24 @@ Form.Slider = new Class({
 		wrapper.wraps(element);
 		return wrapper;
 	},
+	recalibrate: function() {
+		this.fireEvent('onRecalibrateStart',this);
+		var xy = this.xy;
+		var trackSize = this.trackSize;
+		this.ratio = this.wrapper.getSize()[xy] / this.element.getScrollSize()[xy];
+		var scrubber = this.scrubber;
+		var scrubberSize = Math.floor(this.ratio * trackSize);
+		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
+			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
+		});
+		var tween = new Fx.Tween(scrubber,{
+			onComplete:function() {
+				this.limit = trackSize - scrubber.getSize()[xy];
+				this.fireEvent('onRecalibrateFinish',this);
+			}.bind(this)
+		});
+		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
+	},
 	centerScrubberForClick: function(e) {
 		var evt = new Event(e);
 		evt.stop();
