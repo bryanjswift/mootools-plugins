@@ -121,7 +121,7 @@ Form.Dropdown = new Class({
 			option = shortlist[i];
 			if (option.text.toLowerCase().indexOf(value) === 0 && !excludedValues.contains(option.value)) {
 				found = true;
-				this.keyboardHighlightOption(option);
+				this.keyboardHighlight(option);
 				typed.pressed = i + 1;
 				i = optionsLength;
 			}
@@ -132,6 +132,10 @@ Form.Dropdown = new Class({
 	highlightOption: function(option) {
 		if (this.highlighted) { this.highlighted.removeHighlight(); }
 		this.highlighted = option;
+	},
+	keyboardHighlight: function(option) {
+		option.highlight();
+		this.fireEvent('onKeyboardHighlight',option);
 	},
 	keydown: function(e) {
 		if (!this.open) { return; }
@@ -156,7 +160,7 @@ Form.Dropdown = new Class({
 					previous = current.getParent().getLast();
 				}
 				if (typed.pressed > 0) { typed.pressed = typed.pressed - 1; }
-				this.fireEvent('onKeyboardHighlight',previous.retrieve('optionData').highlight());
+				this.keyboardHighlight(previous.retrieve('optionData'));
 				break;
 			case 40: // down
 			case 39: // right
@@ -166,7 +170,7 @@ Form.Dropdown = new Class({
 					next = current.getParent().getFirst();
 				}
 				if (typed.shortlist.length > 0) { typed.pressed = typed.pressed + 1; }
-				this.fireEvent('onKeyboardHighlight',next.retrieve('optionData').highlight());
+				this.keyboardHighlight(next.retrieve('optionData'));
 				break;
 			case 13: // enter
 				evt.stop();
@@ -229,13 +233,13 @@ Form.Dropdown = new Class({
 					if (option.text.toLowerCase().indexOf(key) === 0 && !excludedValues.contains(option.value)) {
 						if (found === 0) { first = option; }
 						found = found + 1;
-						if (found === typed.pressed) { this.fireEvent('onKeyboardHighlight',option); }
+						if (found === typed.pressed) { this.keyboardHighlight(option); }
 						shortlist.push(option);
 					}
 					i = i + 1;
 				} while(i < optionsLength);
 				if (typed.pressed > found) {
-					this.fireEvent('onKeyboardHighlight',first);
+					this.keyboardHighlight(first);
 					typed.pressed = 1;
 				}
 				break;
@@ -277,6 +281,7 @@ Form.Dropdown = new Class({
 			this.element.addClass('active').addClass('dropdown-active');
 			this.selected.highlight();
 			this.element.addEvents(events);
+			this.input.focus();
 			this.fireEvent('onExpand',this)
 		} else { // closing
 			this.element.removeClass('active').removeClass('dropdown-active');

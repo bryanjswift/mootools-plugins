@@ -62,13 +62,13 @@ Form.SelectOption = new Class({
 		this.fireEvent('onEnable',this);
 	},
 	highlight: function() {
-		this.element.addClass(this.config.highlightedClass);
 		this.fireEvent('onHighlight',this);
+		this.element.addClass(this.config.highlightedClass);
 		return this;
 	},
 	removeHighlight: function() {
-		this.element.removeClass(this.config.highlightedClass);
 		this.fireEvent('onRemoveHighlight',this);
+		this.element.removeClass(this.config.highlightedClass);
 		return this;
 	},
 	select: function(e) {
