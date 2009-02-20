@@ -1,11 +1,11 @@
-Class: SelectOption {#SelectOption}
-===================
+Class: Form.SelectOption {#Form.SelectOption}
+========================
 
 Class to represent option elements in a styled select or multi-select element
 
 ### Syntax:
 
-	var selectOption = new StyledForm.SelectOption(element[, options]);
+	var selectOption = new Form.SelectOption(element[, options]);
 
 ### Arguments:
 
@@ -29,18 +29,18 @@ Class to represent option elements in a styled select or multi-select element
 
 ### Returns:
 
-* (*object*) a new SelectOption
+* (*object*) a new Form.SelectOption
 
 ### Examples:
 
 Create a new select option
 
-	var selectOption = new StyledForm.SelectOption(document.getElement('option'));
+	var selectOption = new Form.SelectOption(document.getElement('option'));
 
 
 
-SelectOption Method: deselect {#SelectOption:deselect}
------------------------------
+Form.SelectOption Method: deselect {#Form.SelectOption:deselect}
+----------------------------------
 
 Sets the SelectOption to an unselected state
 
@@ -50,8 +50,8 @@ Sets the SelectOption to an unselected state
 
 
 
-SelectOption Method: destroy {#SelectOption:destroy}
-----------------------------
+Form.SelectOption Method: destroy {#Form.SelectOption:destroy}
+---------------------------------
 
 Sets element references to null and prepares for document unload
 
@@ -61,8 +61,8 @@ Sets element references to null and prepares for document unload
 
 
 
-SelectOption Method: disable {#SelectOption:disable}
-----------------------------
+Form.SelectOption Method: disable {#Form.SelectOption:disable}
+---------------------------------
 
 Removes mouse events from the option element
 
@@ -71,8 +71,8 @@ Removes mouse events from the option element
 	option.disable();
 
 
-SelectOption Method: enable {#SelectOption:enable}
----------------------------
+Form.SelectOption Method: enable {#Form.SelectOption:enable}
+--------------------------------
 
 Adds mouse events to the option element
 
@@ -82,8 +82,8 @@ Adds mouse events to the option element
 
 
 
-SelectOption Method: highlight {#SelectOption:highlight}
-------------------------------
+Form.SelectOption Method: highlight {#Form.SelectOption:highlight}
+-----------------------------------
 
 Updates object state to signify being highlighted
 
@@ -93,7 +93,7 @@ Updates object state to signify being highlighted
 
 
 
-SelectOption Method: removeHighlight {#SelectOption:removeHighlight}
+Form.SelectOption Method: removeHighlight {#Form.SelectOption:removeHighlight}
 
 Updates object state to signify default state
 
@@ -103,8 +103,8 @@ Updates object state to signify default state
 
 
 
-SelectOption Method: select {#SelectOption:select}
----------------------------
+Form.SelectOption Method: select {#Form.SelectOption:select}
+--------------------------------
 
 Sets the SelectOption to a selected state
 
@@ -115,4 +115,4 @@ Sets the SelectOption to a selected state
 
 
 [Element]: http://mootools.net/docs/Element/Element
-[SelectOption]: #SelectOption
+[Form.SelectOption]: #Form.SelectOption
