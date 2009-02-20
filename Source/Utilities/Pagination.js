@@ -86,5 +86,16 @@ Pagination = new Class({
 		else { this.initializeObject(data); }
 		this.numberPages = Math.ceil(this.keys.length / this.options.pageSize);
 		this.getFirstPage();
+	},
+	updateOptions: function(options) {
+		var changed = false;
+		var thisoptions = this.options;
+		var option;
+		for (option in options) {
+			if (!$defined(thisoptions[option]) { continue; }
+			changed = changed || thisoptions[option] !== options[option];
+			thisoptions[option] = options[option];
+		}
+		if (changed) { this.page = 0; this.reset(this.keys); }
 	}
 });
