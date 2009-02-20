@@ -54,7 +54,7 @@ Form.Dropdown = new Class({
 			dropdownOptions.push(option);
 			optionsList.adopt(option.element);
 		},this);
-		if (!this.selected) { optionElements[0].retrieve('optionData').select(); }
+		if (!this.selected) { optionElements[0].retrieve('Form.SelectOption::data').select(); }
 		this.element.replaces(select);
 		document.addEvent('click', this.bound.collapse);
 		var eventName = Browser.Engine.trident || Browser.Engine.webkit ? 'keydown' : 'keypress';
@@ -160,7 +160,7 @@ Form.Dropdown = new Class({
 					previous = current.getParent().getLast();
 				}
 				if (typed.pressed > 0) { typed.pressed = typed.pressed - 1; }
-				this.keyboardHighlight(previous.retrieve('optionData'));
+				this.keyboardHighlight(previous.retrieve('Form.SelectOption::data'));
 				break;
 			case 40: // down
 			case 39: // right
@@ -170,12 +170,12 @@ Form.Dropdown = new Class({
 					next = current.getParent().getFirst();
 				}
 				if (typed.shortlist.length > 0) { typed.pressed = typed.pressed + 1; }
-				this.keyboardHighlight(next.retrieve('optionData'));
+				this.keyboardHighlight(next.retrieve('Form.SelectOption::data'));
 				break;
 			case 13: // enter
 				evt.stop();
 			case 9: // tab - skips the stop event but clicks the item
-				current.retrieve('optionData').select();
+				current.retrieve('Form.SelectOption::data').select();
 				break;
 			case 27: // esc
 				evt.stop();
