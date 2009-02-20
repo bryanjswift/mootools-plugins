@@ -1,7 +1,12 @@
-Class: Form.Check {#Form.Check}
+Class: Form.Check {#Form-Check}
 =================
 
 Class to represent a checkbox
+
+
+
+Form.Check Method: constructor {#Form-Check:constructor}
+------------------------------
 
 ### Syntax:
 
@@ -34,11 +39,14 @@ Class to represent a checkbox
 
 ### Examples:
 
-	var check = new Form.Check(document.getElement('input[type=checkbox]));
+	var check = new Form.Check(document.getElement('input[type=checkbox]'));
+
+### Notes:
+
+- Form.Check is stored on element as 'Form.Check::data' and can be retrieved with that key
 
 
-
-Form.Check Method: disable {#Form.Check:disable}
+Form.Check Method: disable {#Form-Check:disable}
 --------------------------
 
 Sets the checkbox to it's disabled state
@@ -49,7 +57,7 @@ Sets the checkbox to it's disabled state
 
 
 
-Form.Check Method: enable {#Form.Check:enable}
+Form.Check Method: enable {#Form-Check:enable}
 -------------------------
 
 Sets the checkbox to it's enabled state
@@ -60,7 +68,7 @@ Sets the checkbox to it's enabled state
 
 
 
-Form.Check Method: highlight {#Form.Check:highlight}
+Form.Check Method: highlight {#Form-Check:highlight}
 ----------------------------
 
 Puts the checkbox into it's highlighted state
@@ -71,7 +79,7 @@ Puts the checkbox into it's highlighted state
 
 
 
-Form.Check Method: removeHighlight {#Form.Check:removeHighlight}
+Form.Check Method: removeHighlight {#Form-Check:removeHighlight}
 ----------------------------------
 
 Takes the checkbox out of it's highlighted state
@@ -82,7 +90,7 @@ Takes the checkbox out of it's highlighted state
 
 
 
-Form.Check Method: toggle {#Form.Check:toggle}
+Form.Check Method: toggle {#Form-Check:toggle}
 -------------------------
 
 Toggles the checked state of the checkbox
