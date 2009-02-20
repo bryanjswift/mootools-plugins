@@ -8,7 +8,7 @@ Pagination = new Class({
 	},
 	keys: [],
 	numberPages: 0,
-	page: 1,
+	page: 0,
 	initialize: function(data,options) {
 		this.setOptions(options);
 		this.reset(data);
@@ -24,7 +24,9 @@ Pagination = new Class({
 		}
 	},
 	getCurrentPage: function() {
-		return this.getPage(this.page);
+		var page = this.page;
+		this.page = 0;
+		return this.getPage(page);
 	},
 	getFirstPage: function() {
 		return this.getPage(1);
@@ -42,7 +44,7 @@ Pagination = new Class({
 		} else if (pageNumber < 1) {
 			if (this.options.wrap) { pageNumber = this.numberPages; }
 			else { return; }
-		}
+		} else if (pageNumber === this.page) { return; }
 		this.page = pageNumber;
 		var pageSize = this.options.pageSize;
 		var slice = this.keys.slice(pageSize * (pageNumber - 1),pageNumber * pageSize);
