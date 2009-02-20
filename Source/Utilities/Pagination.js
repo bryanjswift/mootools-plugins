@@ -70,11 +70,11 @@ Pagination = new Class({
 				start = current - halfShown;
 			}
 			for (i = 0; i < pagesShown; i = i + 1) {
-				this.pages.push(start + i);
+				pages.push(start + i);
 			}
 		} else {
 			for (i = 1; i <= numberPages; i = i + 1) {
-				this.pages.push(i);
+				pages.push(i);
 			}
 		}
 	},
