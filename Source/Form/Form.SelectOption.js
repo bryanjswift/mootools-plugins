@@ -5,8 +5,7 @@ Form.SelectOption = new Class({
 	Implements: [Events,Options],
 	options: {
 		optionTag: 'li',
-		selected: false,
-		storageName: 'optionData'
+		selected: false
 	},
 	config: {
 		highlightedClass: 'highlighted',
@@ -40,8 +39,8 @@ Form.SelectOption = new Class({
 				mouseleave: this.bound.removeHighlight
 			}
 		});
-		this.element.store(this.options.storageName,this);
-		option.store(this.options.storageName,this);
+		this.element.store('Form.SelectOption::data',this);
+		option.store('Form.SelectOption::data',this);
 	},
 	deselect: function(e) {
 		this.fireEvent('onDeselect',[this,e]);
