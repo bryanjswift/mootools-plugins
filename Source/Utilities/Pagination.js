@@ -92,7 +92,7 @@ Pagination = new Class({
 		var thisoptions = this.options;
 		var option;
 		for (option in options) {
-			if (!$defined(thisoptions[option]) { continue; }
+			if (!$defined(thisoptions[option])) { continue; }
 			changed = changed || thisoptions[option] !== options[option];
 			thisoptions[option] = options[option];
 		}
