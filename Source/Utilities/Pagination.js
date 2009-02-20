@@ -77,6 +77,7 @@ Pagination = new Class({
 				pages.push(i);
 			}
 		}
+		return pages;
 	},
 	reset: function(data) {
 		if ($type(data) === 'array') { this.initializeArray(data); }
