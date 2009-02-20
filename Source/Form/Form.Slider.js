@@ -6,8 +6,9 @@ Form.Slider = new Class({
 	options: {
 		animate: true,
 		duration: 500,
+		scrollbar: false,
 		showButtons: true,
-		snapSize: null,
+		snapSize: false,
 		vertical: true
 	},
 	bound: {},
@@ -73,12 +74,10 @@ Form.Slider = new Class({
 		element.store('Form.Slider::data',this);
 	},
 	initializeScrollbar: function() {
-		var scrollbar = new Element('div',{
-			'class': 'scrollbar'
-		});
+		var scrollbar = this.options.scrollbar || new Element('div',{'class':'scrollbar'});
 		var back, forward;
 		if (this.options.showButtons) {
-			back = new Element('div',{'class':'scrollbarBack',events:{mousedown:this.bound.backClick,mouseup:this.bound.buttonUp}});
+			back = this.getCreateElement(scrollbar,'scrollbarBack').addEvents({mousedown:this.bound.backClick,mouseup:this.bound.buttonUp});
 			back.addEvents({
 				mouseenter: back.addClass.pass(['scrollbarBackOver'],back),
 				mouseleave: back.removeClass.pass(['scrollbarBackOver'],back),
@@ -88,19 +87,9 @@ Form.Slider = new Class({
 		} else {
 			back = null;
 		}
-		var track = new Element('div',{
-			'class':'scrollbarTrack',
-			events: {
-				click: this.bound.trackClick
-			}
-		});
-		var scrubber = new Element('div',{
-			'class':'scrollbarScrubber',
-			events: {
-				click: function(e) { var evt = new Event(e); evt.stop(); },
-				mousedown: this.bound.scrubberDown
-			}
-		});
+		// get or create new track then add events
+		var track = this.getCreateElement(scrollbar,'scrollbarTrack').addEvents({click:this.bound.trackClick});
+		var scrubber = this.getCreateElement(scrollbar,'scrollbarScrubber').addEvents({click:this.stopEvent,mousedown:this.bound.scrubberDown});
 		scrubber.addEvents({
 			mouseenter: scrubber.addClass.pass(['scrollbarScrubberOver'],scrubber),
 			mouseleave: scrubber.removeClass.pass(['scrollbarScrubberOver'],scrubber),
@@ -112,7 +101,7 @@ Form.Slider = new Class({
 			transition: 'linear'
 		});
 		if (this.options.showButtons) {
-			forward = new Element('div',{'class':'scrollbarForward',events:{mousedown:this.bound.forwardClick,mouseup:this.bound.buttonUp}});
+			forward = this.getCreateElement(scrollbar,'scrollbarForward').addEvents({mousedown:this.bound.forwardClick,mouseup:this.bound.buttonUp});
 			forward.addEvents({
 				mouseenter: forward.addClass.pass(['scrollbarForwardOver'],forward),
 				mouseleave: forward.removeClass.pass(['scrollbarForwardOver'],forward),
@@ -156,6 +145,24 @@ Form.Slider = new Class({
 		wrapper.wraps(element);
 		return wrapper;
 	},
+	recalibrate: function() {
+		this.fireEvent('onRecalibrateStart',this);
+		var xy = this.xy;
+		var trackSize = this.trackSize;
+		this.ratio = this.wrapper.getSize()[xy] / this.element.getScrollSize()[xy];
+		var scrubber = this.scrubber;
+		var scrubberSize = Math.floor(this.ratio * trackSize);
+		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
+			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
+		});
+		var tween = new Fx.Tween(scrubber,{
+			onComplete:function() {
+				this.limit = trackSize - scrubber.getSize()[xy];
+				this.fireEvent('onRecalibrateFinish',this);
+			}.bind(this)
+		});
+		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
+	},
 	centerScrubberForClick: function(e) {
 		var evt = new Event(e);
 		evt.stop();
@@ -181,6 +188,9 @@ Form.Slider = new Class({
 		var evt = new Event(e);
 		var position = evt.page[this.xy] - this.track.getPosition()[this.xy] - this.dragProperties.downPosition;
 		this.setScrubberPosition(position,false);
+	},
+	getCreateElement: function(scrollbar,clazz) {
+		return this.options.scrollbar ? scrollbar.getElement('.' + clazz).removeEvents() : new Element('div',{'class':clazz});
 	},
 	moveContent: function(ratio,animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
@@ -216,6 +226,7 @@ Form.Slider = new Class({
 		drag.downPosition = null;
 		document.removeEvents({mousemove:this.bound.scrubberDrag, mouseup:this.bound.scrubberUp});
 	},
+	stopEvent: function(e) { var evt = new Event(e); evt.stop(); },
 	setScrubberPosition: function(position, animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
 		if (position < 0) {
