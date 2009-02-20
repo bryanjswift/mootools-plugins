@@ -16,7 +16,6 @@ Class to represent option elements in a styled select or multi-select element
 
 * optionTag						- (*string*: defaults to 'li') type of element used to mimic an option element
 * selected						- (*boolean*: defaults to false) true if this option starts selected
-* storageName					- (*string*: defaults to 'optionData') string which can be used to retrieve SelectOption from the new element
 
 ### Events:
 
