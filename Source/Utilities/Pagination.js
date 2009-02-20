@@ -2,6 +2,7 @@
 Pagination = new Class({
 	Implements:[Events,Options],
 	options: {
+		pagesShown: 5,
 		pageSize: 10,
 		wrap: true
 	},
@@ -23,16 +24,16 @@ Pagination = new Class({
 		}
 	},
 	getCurrentPage: function() {
-		this.getPage(this.page);
+		return this.getPage(this.page);
 	},
 	getFirstPage: function() {
-		this.getPage(1);
+		return this.getPage(1);
 	},
 	getLastPage: function() {
-		this.getPage(this.numberPages);
+		return this.getPage(this.numberPages);
 	},
 	getNextPage: function() {
-		this.getPage(this.page + 1);
+		return this.getPage(this.page + 1);
 	},
 	getPage: function(pageNumber) {
 		if (pageNumber > this.numberPages) {
@@ -44,10 +45,38 @@ Pagination = new Class({
 		}
 		this.page = pageNumber;
 		var pageSize = this.options.pageSize;
-		this.fireEvent('onPage',[this.keys.slice(pageSize * (pageNumber - 1),pageNumber * pageSize),this]);
+		var slice = this.keys.slice(pageSize * (pageNumber - 1),pageNumber * pageSize);
+		this.fireEvent('onPage',[slice,this]);
+		return slice;
 	},
 	getPreviousPage: function() {
-		this.getPage(this.page - 1);
+		return this.getPage(this.page - 1);
+	},
+	getShownPages: function() {
+		var pages = [];
+		var numberPages = this.numberPages;
+		var pagesShown = this.options.pagesShown;
+		var halfShown = Math.floor(pagesShown / 2);
+		var current = this.page;
+		var start = 1 + halfShown;
+		var end = numberPages - halfShown;
+		var i;
+		if (numberPages > pagesShown) {
+			if (current < start) {
+				start = 1;
+			} else if (current > end) {
+				start = end - halfShown;
+			} else {
+				start = current - halfShown;
+			}
+			for (i = 0; i < pagesShown; i = i + 1) {
+				this.pages.push(start + i);
+			}
+		} else {
+			for (i = 1; i <= numberPages; i = i + 1) {
+				this.pages.push(i);
+			}
+		}
 	},
 	reset: function(data) {
 		if ($type(data) === 'array') { this.initializeArray(data); }
