@@ -145,24 +145,6 @@ Form.Slider = new Class({
 		wrapper.wraps(element);
 		return wrapper;
 	},
-	recalibrate: function() {
-		this.fireEvent('onRecalibrateStart',this);
-		var xy = this.xy;
-		var trackSize = this.trackSize;
-		this.ratio = this.wrapper.getSize()[xy] / this.element.getScrollSize()[xy];
-		var scrubber = this.scrubber;
-		var scrubberSize = Math.floor(this.ratio * trackSize);
-		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
-			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
-		});
-		var tween = new Fx.Tween(scrubber,{
-			onComplete:function() {
-				this.limit = trackSize - scrubber.getSize()[xy];
-				this.fireEvent('onRecalibrateFinish',this);
-			}.bind(this)
-		});
-		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
-	},
 	centerScrubberForClick: function(e) {
 		var evt = new Event(e);
 		evt.stop();
@@ -174,15 +156,15 @@ Form.Slider = new Class({
 	clearButtonHoldInterval: function() {
 		$clear(this.buttonHoldInterval);
 	},
-	scroll: function(e) {
-		var evt = new Event(e);
-		if (evt.wheel > 0 && this.position != 0) {
-			// wheel up
-			this.pageBackward(e);
-		} else if (evt.wheel < 0 && this.position != this.limit) {
-			// wheel down
-			this.pageForward(e);
-		}
+	destroy: function() {
+		this.element = null;
+		this.scrollbar.destroy();
+		this.scrollbar = null;
+		this.scrubber = null;
+		this.wrapper.getParent().adopt(this.wrapper.getChildren());
+		this.wrapper.destroy();
+		this.wrapper = null;
+		document.removeEvent('mousewheel',this.bound.mousewheel);
 	},
 	drag: function(e) {
 		var evt = new Event(e);
@@ -209,6 +191,34 @@ Form.Slider = new Class({
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position + (this.track.getSize()[this.xy] * 0.25));
 		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this,[e]); }
+	},
+	recalibrate: function() {
+		this.fireEvent('onRecalibrateStart',this);
+		var xy = this.xy;
+		var trackSize = this.trackSize;
+		this.ratio = this.wrapper.getSize()[xy] / this.element.getScrollSize()[xy];
+		var scrubber = this.scrubber;
+		var scrubberSize = Math.floor(this.ratio * trackSize);
+		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
+			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
+		});
+		var tween = new Fx.Tween(scrubber,{
+			onComplete:function() {
+				this.limit = trackSize - scrubber.getSize()[xy];
+				this.fireEvent('onRecalibrateFinish',this);
+			}.bind(this)
+		});
+		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
+	},
+	scroll: function(e) {
+		var evt = new Event(e);
+		if (evt.wheel > 0 && this.position != 0) {
+			// wheel up
+			this.pageBackward(e);
+		} else if (evt.wheel < 0 && this.position != this.limit) {
+			// wheel down
+			this.pageForward(e);
+		}
 	},
 	startDrag: function(e) {
 		var evt = new Event(e);
