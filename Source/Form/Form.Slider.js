@@ -54,7 +54,7 @@ Form.Slider = new Class({
 		var trackSize = scrollbar.getSize()[xy] - backSize - forwardSize;
 		var trackStyles = vertical ? {height:trackSize,position:'absolute','top':backSize} : {width:trackSize,position:'absolute','left':backSize};
 		this.track = scrollbar.getElement('div.scrollbarTrack').setStyles(trackStyles);
-		this.ratio = wrapper.getSize()[xy] / element.getScrollSize()[xy];
+		this.ratio = wrapper.getSize()[xy] / element.getSize()[xy];
 		var scrubber = scrollbar.getElement('div.scrollbarScrubber');
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		sides.each(function(side) {
@@ -179,7 +179,7 @@ Form.Slider = new Class({
 		// fireEvent appears to not pass args which evaluate to false
 		if (typeof ratio !== 'number' || !ratio) { ratio = 0; }
 		var list = this.element;
-		var position = -ratio * list.getScrollSize()[this.xy];
+		var position = -ratio * list.getSize()[this.xy];
 		list.get('tween')[animate ? 'start' : 'set'](this.dimension,position);
 	},
 	pageBackward: function(e) {
@@ -196,7 +196,7 @@ Form.Slider = new Class({
 		this.fireEvent('onRecalibrateStart',this);
 		var xy = this.xy;
 		var trackSize = this.trackSize;
-		this.ratio = this.wrapper.getSize()[xy] / this.element.getScrollSize()[xy];
+		this.ratio = this.wrapper.getSize()[xy] / this.element.getSize()[xy];
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
