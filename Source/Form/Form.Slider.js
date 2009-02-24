@@ -158,13 +158,14 @@ Form.Slider = new Class({
 	},
 	destroy: function() {
 		this.element = null;
-		this.scrollbar.destroy();
 		this.scrollbar = null;
 		this.scrubber = null;
-		this.wrapper.getParent().adopt(this.wrapper.getChildren());
-		this.wrapper.destroy();
 		this.wrapper = null;
 		document.removeEvent('mousewheel',this.bound.mousewheel);
+		if (!this.scrollbar) { return; }
+		this.wrapper.getParent().adopt(this.wrapper.getChildren());
+		this.wrapper.destroy();
+		this.scrollbar.destroy();
 	},
 	drag: function(e) {
 		var evt = new Event(e);
