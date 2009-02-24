@@ -72,6 +72,8 @@ Form.Slider = new Class({
 		this.xy = xy;
 		// store data
 		element.store('Form.Slider::data',this);
+		// fire an event for post processing
+		this.fireEvent('onCreate',this);
 	},
 	initializeScrollbar: function() {
 		var scrollbar = this.options.scrollbar || new Element('div',{'class':'scrollbar'});
