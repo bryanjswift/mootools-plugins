@@ -65,7 +65,7 @@ Form.Slider = new Class({
 		this.dimension = positionDimension;
 		this.element = element;
 		this.limit = trackSize - scrubber.getSize()[xy];
-		this.pageSize = size;
+		this.pageSize = size * this.ratio;
 		this.scrubber = scrubber;
 		this.trackSize = trackSize;
 		this.wrapper = wrapper;
@@ -187,12 +187,12 @@ Form.Slider = new Class({
 	},
 	pageBackward: function(e) {
 		var evt = e ? new Event(e).stop() : null;
-		this.setScrubberPosition(this.position - (this.track.getSize()[this.xy] * 0.25));
+		this.setScrubberPosition(this.position - (this.pageSize * 0.25));
 		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageBackward.delay(150,this,[e]); }
 	},
 	pageForward: function(e) {
 		var evt = e ? new Event(e).stop() : null;
-		this.setScrubberPosition(this.position + (this.track.getSize()[this.xy] * 0.25));
+		this.setScrubberPosition(this.position + (this.pageSize * 0.25));
 		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this,[e]); }
 	},
 	recalibrate: function() {
