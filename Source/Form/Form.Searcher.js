@@ -1,89 +1,109 @@
 /*extern Class, Events, Options, Form, $, Element */
 if (typeof Form === 'undefined') { Form = {}; }
 
-Form.DataMatch = new Class({
-	element: null,
-	url: null,
-	initialize: function(data) {
-		this.element = new Element('li',{
-			events: {
-				click: this.select.bind(this),
-				mouseenter: this.highlight.bind(this),
-				mouseleave: this.removeHighlight.bind(this)
-			},
-			html: data.name
-		});
-		this.url = data.url;
-		this.element.store('Form.Searcher::match',this);
-	},
-	highlight: function() {
-		this.element.addClass('hover');
-	},
-	removeHighlight: function() {
-		this.element.removeClass('hover');
-	},
-	select: function() {
-		location.href = this.url;
-	}
-});
-Form.DataSearcher = new Class({
+Form.Searcher = new Class({
 	Implements:[Events,Options],
 	options: {
-		search: /^\w{2,}/,
+		matchOptions: {},
+		scrollCount: false,
+		search: /^\w{2,}/
 	},
 	bound: {},
 	config: {},
-	highlighted: null, // <DataMatch>
 	data: [], // Array of <Data>
+	highlighted: null, // <DataMatch>
+	matches: [],
 	initialize: function(field,results,options) {
 		if (!field || !results) { return; }
 		this.setOptions(options);
 		this.bound = {
 			filter: this.filter.bind(this),
-			keypress: this.keypress.bind(this)
+			focus: this.focus.bind(this),
+			keypress: this.keypress.bind(this),
+			matchHighlight: this.matchHighlight.bind(this),
+			matchRemoveHighlight: this.matchRemoveHighlight.bind(this),
+			quit: this.quit.bind(this)
 		};
 		this.field = $(field).addEvents({
-			keypress:this.bound.keypress
+			click: this.stopEvent,
+			focus: this.bound.focus,
+			keypress: this.bound.keypress
 		});
-		this.results = $(results);
+		this.results = $(results).addEvents({
+			click: this.stopEvent
+		});
 		this.resultsList = this.results.getElement('ul').empty();
-		this.match = new Element('li');
+		document.addEvent('click',this.bound.quit);
 	},
+	// gets added as keyup event on alphanumeric keypress
 	filter: function() {
+		this.fireEvent('onFilterStart',this);
 		var value = this.field.get('value').toLowerCase();
+		this.lastSearch = value;
 		this.resultsList.empty();
+		var matches = this.matches;
+		matches.each(function(match) { match.destroy(); });
+		matches.empty();
 		if (!value.match(this.options.search)) { return; }
+		var options = this.options.matchOptions;
 		var results = new Elements();
 		var objects = this.data;
 		var i = 0;
 		var objectsLength = objects.length;
-		var data;
+		var data, match;
 		do {
 			data = objects[i];
 			if (data.name.toLowerCase().indexOf(value) > -1) {
-				results.push(this.processMatch(data));
+				match = this.processMatch(data,options);
+				matches.push(match);
+				results.push(match.element);
 			}
 			i = i + 1;
 		} while (i - objectsLength);
 		this.resultsList.adopt(results);
-		// if there are too many objects don't show the result list
-		// if not over max but over scroll number setup scroller
+		this.fireEvent('onFilterComplete',this);
+		// if there is a scroll count provided check and see if the lenght is over it
+		if (typeof this.options.scrollCount !== 'boolean') {
+			if (matches.length > this.options.scrollCount) { this.fireEvent('onScrollable',this); }
+			else { this.fireEvent('onNotScrollable',this); }
+		}
+	},
+	focus: function(e) {
+		if (this.highlighted) { this.field.set('value',this.highlighted.data.name); }
+		this.fireEvent('onFocus',this);
 	},
 	keypress: function(e) {
 		var evt = new Event(e);
 		var code = evt.code;
 		var key = evt.key;
+		var highlighted = this.highlighted;
+		var match;
 		this.field.removeEvent('keyup',this.bound.filter);
 		switch(code) {
 			case 27: // esc
-			case 37: // left
-			case 38: // up
-			case 39: // right
-			case 40: // down
+				this.quit();
 				break;
 			case 9: // tab
+				evt.stop();
+			case 39: // right
+			case 40: // down
+				if (!highlighted) { this.resultsList.getFirst().retrieve('Form.Searcher::match').highlight(); break; }
+				match = highlighted.element.getNext();
+				highlighted.element.retrieve('Form.Searcher::match').removeHighlight();
+				if (match) { match.retrieve('Form.Searcher::match').highlight(); }
+				else { this.highlighted = null; }
+				break;
+			case 37: // left
+			case 38: // up
+				if (!highlighted) { this.resultsList.getLast().retrieve('Form.Searcher::match').highlight(); break; }
+				match = highlighted.element.getPrevious();
+				highlighted.element.retrieve('Form.Searcher::match').removeHighlight();
+				if (match) { match.retrieve('Form.Searcher::match').highlight(); }
+				else { this.highlighted = null; }
+				break;
 			case 13: // enter
 				evt.stop();
+				if (highlighted) { highlighted.retrieve('Form.Searcher::match').select(); }
 				break;
 			case 8: // backspace
 			case 32: // space
@@ -97,8 +117,62 @@ Form.DataSearcher = new Class({
 				break;
 		}
 	},
-	processMatch: function(data) {
-		var match = new Form.DataMatch(match);
-		return match.element;
+	matchHighlight: function(match) {
+		this.highlighted = match;
+		this.field.set('value',match.data.name);
+	},
+	matchRemoveHighlight: function(match) {
+		this.field.set('value',this.lastSearch);
+	},
+	processMatch: function(data,options) {
+		var match = new Form.Searcher.Match(data,options);
+		match.addEvents({
+			onHighlight: this.bound.matchHighlight,
+			onRemoveHighlight: this.bound.matchRemoveHighlight
+		});
+		return match;
+	},
+	quit: function(e) {
+		this.field.set('value',this.lastSearch);
+		this.field.blur();
+		this.fireEvent('onQuit',this);
+	},
+	stopEvent: function(e) {
+		if (!e) { return; }
+		var evt = new Event(e);
+		evt.stop();
+	}
+});
+Form.Searcher.Match = new Class({
+	Implements:[Events,Options],
+	element: null,
+	data: null,
+	initialize: function(data,options) {
+		this.setOptions(options);
+		this.data = data;
+		this.element = new Element('li',{
+			events: {
+				click: this.select.bind(this),
+				mouseenter: this.highlight.bind(this),
+				mouseleave: this.removeHighlight.bind(this)
+			},
+			html: data.name
+		});
+		this.element.store('Form.Searcher::match',this);
+	},
+	destroy: function() {
+		this.element.removeEvents();
+		this.element = null;
+	},
+	highlight: function() {
+		this.element.addClass('highlighted');
+		this.fireEvent('onHighlight',this);
+	},
+	removeHighlight: function() {
+		this.element.removeClass('highlighted');
+		this.fireEvent('onRemoveHighlight',this);
+	},
+	select: function() {
+		this.fireEvent('onSelect',this);
 	}
 });
