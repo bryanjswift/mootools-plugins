@@ -35,6 +35,8 @@ Form.Slider = new Class({
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
 		var size = element.getStyle(dimension).toInt();
+log.info('size: ' + size);
+log.info('scrollSize: ' + element.getScrollSize()[xy]);
 		if (element.getScrollSize()[xy] <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
@@ -136,12 +138,10 @@ Form.Slider = new Class({
 		wrapperStyles[dimension] = size;
 		var wrapper = new Element('div',{
 			'class':'scrollbarWrapper',
-			events: {
-				mouseenter: document.addEvent.pass(['mousewheel',this.bound.mousewheel],document),
-				mouseleave: document.removeEvent.pass(['mousewheel',this.bound.mousewheel],document)
-			},
 			styles: wrapperStyles
 		});
+		wrapper.addEvents({mouseenter:wrapper.addClass.pass(['hovered'],wrapper), mouseleave:wrapper.removeClass.pass(['hovered'],wrapper)});
+		document.addEvent('mousewheel',this.bound.mousewheel);
 		this.wrapper = wrapper;
 		element.setStyles(elementStyles);
 		wrapper.wraps(element);
@@ -159,6 +159,7 @@ Form.Slider = new Class({
 		$clear(this.buttonHoldInterval);
 	},
 	destroy: function() {
+log.info('destroying');
 		this.element = null;
 		this.scrollbar = null;
 		this.scrubber = null;
@@ -214,6 +215,7 @@ Form.Slider = new Class({
 		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
 	},
 	scroll: function(e) {
+		if (!this.wrapper.hasClass('hovered')) { return; }
 		var evt = new Event(e);
 		if (evt.wheel > 0 && this.position != 0) {
 			// wheel up
