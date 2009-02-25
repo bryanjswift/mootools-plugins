@@ -157,15 +157,16 @@ Form.Slider = new Class({
 		$clear(this.buttonHoldInterval);
 	},
 	destroy: function() {
+		document.removeEvent('mousewheel',this.bound.mousewheel);
+		if (!this.options.wrapper) {
+			this.wrapper.getParent().adopt(this.wrapper.getChildren());
+			this.wrapper.destroy();
+		}
+		if (!this.options.scrollbar) { this.scrollbar.destroy(); }
 		this.element = null;
 		this.scrollbar = null;
 		this.scrubber = null;
 		this.wrapper = null;
-		document.removeEvent('mousewheel',this.bound.mousewheel);
-		if (!this.scrollbar) { return; }
-		this.wrapper.getParent().adopt(this.wrapper.getChildren());
-		this.wrapper.destroy();
-		this.scrollbar.destroy();
 	},
 	drag: function(e) {
 		var evt = new Event(e);
