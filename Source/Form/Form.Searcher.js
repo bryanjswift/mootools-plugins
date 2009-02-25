@@ -37,14 +37,14 @@ Form.Searcher = new Class({
 	},
 	// gets added as keyup event on alphanumeric keypress
 	filter: function() {
-		this.fireEvent('onFilterStart',this);
+		this.fireEvent('filterStart',this);
 		var value = this.field.get('value').toLowerCase();
 		this.lastSearch = value;
 		this.resultsList.empty();
 		var matches = this.matches;
 		matches.each(function(match) { match.destroy(); });
 		matches.empty();
-		if (!value.match(this.options.search)) { return; }
+		if (!value.match(this.options.search)) { return this.fireEvent('noMatch',this); }
 		var options = this.options.matchOptions;
 		var results = new Elements();
 		var objects = this.data;
@@ -61,16 +61,16 @@ Form.Searcher = new Class({
 			i = i + 1;
 		} while (i - objectsLength);
 		this.resultsList.adopt(results);
-		this.fireEvent('onFilterComplete',this);
+		this.fireEvent('filterComplete',this);
 		// if there is a scroll count provided check and see if the lenght is over it
 		if (typeof this.options.scrollCount !== 'boolean') {
-			if (matches.length > this.options.scrollCount) { this.fireEvent('onScrollable',this); }
-			else { this.fireEvent('onNotScrollable',this); }
+			if (matches.length > this.options.scrollCount) { this.fireEvent('scrollable',this); }
+			else { this.fireEvent('notScrollable',this); }
 		}
 	},
 	focus: function(e) {
 		if (this.highlighted) { this.field.set('value',this.highlighted.data.name); }
-		this.fireEvent('onFocus',this);
+		this.fireEvent('focus',this);
 	},
 	keypress: function(e) {
 		var evt = new Event(e);
@@ -84,6 +84,7 @@ Form.Searcher = new Class({
 				this.quit();
 				break;
 			case 9: // tab
+				if (!this.matches.length) { break; }
 				evt.stop();
 			case 39: // right
 			case 40: // down
@@ -136,7 +137,7 @@ Form.Searcher = new Class({
 	quit: function(e) {
 		this.field.set('value',this.lastSearch);
 		this.field.blur();
-		this.fireEvent('onQuit',this);
+		this.fireEvent('quit',this);
 	},
 	stopEvent: function(e) {
 		if (!e) { return; }
@@ -167,13 +168,13 @@ Form.Searcher.Match = new Class({
 	},
 	highlight: function(e) {
 		this.element.addClass('highlighted');
-		this.fireEvent('onHighlight',[e,this]);
+		this.fireEvent('highlight',[e,this]);
 	},
 	removeHighlight: function(e) {
 		this.element.removeClass('highlighted');
-		this.fireEvent('onRemoveHighlight',[e,this]);
+		this.fireEvent('removeHighlight',[e,this]);
 	},
 	select: function() {
-		this.fireEvent('onSelect',this);
+		this.fireEvent('select',this);
 	}
 });
