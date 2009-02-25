@@ -198,19 +198,17 @@ Form.Slider = new Class({
 		this.fireEvent('onRecalibrateStart',this);
 		var xy = this.xy;
 		var trackSize = this.trackSize;
+		this.element.setStyle(this.options.vertical ? 'height' : 'width','auto');
 		this.ratio = this.wrapper.getSize()[xy] / this.element.getSize()[xy];
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
 			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
 		});
-		var tween = new Fx.Tween(scrubber,{
-			onComplete:function() {
-				this.limit = trackSize - scrubber.getSize()[xy];
-				this.fireEvent('onRecalibrateFinish',this);
-			}.bind(this)
-		});
-		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
+		scrubber.setStyle(this.options.vertical ? 'height' : 'width',scrubberSize);
+		this.limit = trackSize - scrubber.getSize()[xy];
+		if (this.position > this.limit) { this.setScrubberPosition(this.limit,false); }
+		this.fireEvent('onRecalibrateFinish',this);
 	},
 	scroll: function(e) {
 		if (!this.wrapper.hasClass('hovered')) { return; }
