@@ -87,18 +87,18 @@ Form.Searcher = new Class({
 				evt.stop();
 			case 39: // right
 			case 40: // down
-				if (!highlighted) { this.resultsList.getFirst().retrieve('Form.Searcher::match').highlight(); break; }
+				if (!highlighted) { this.resultsList.getFirst().retrieve('Form.Searcher::match').highlight(e); break; }
 				match = highlighted.element.getNext();
-				highlighted.element.retrieve('Form.Searcher::match').removeHighlight();
-				if (match) { match.retrieve('Form.Searcher::match').highlight(); }
+				highlighted.element.retrieve('Form.Searcher::match').removeHighlight(e);
+				if (match) { match.retrieve('Form.Searcher::match').highlight(e); }
 				else { this.highlighted = null; }
 				break;
 			case 37: // left
 			case 38: // up
-				if (!highlighted) { this.resultsList.getLast().retrieve('Form.Searcher::match').highlight(); break; }
+				if (!highlighted) { this.resultsList.getLast().retrieve('Form.Searcher::match').highlight(e); break; }
 				match = highlighted.element.getPrevious();
-				highlighted.element.retrieve('Form.Searcher::match').removeHighlight();
-				if (match) { match.retrieve('Form.Searcher::match').highlight(); }
+				highlighted.element.retrieve('Form.Searcher::match').removeHighlight(e);
+				if (match) { match.retrieve('Form.Searcher::match').highlight(e); }
 				else { this.highlighted = null; }
 				break;
 			case 13: // enter
@@ -117,11 +117,12 @@ Form.Searcher = new Class({
 				break;
 		}
 	},
-	matchHighlight: function(match) {
+	matchHighlight: function(e,match) {
+		var evt = new Event(e);
 		this.highlighted = match;
-		this.field.set('value',match.data.name);
+		if (evt.type.match(/^key/)) { this.field.set('value',match.data.name); }
 	},
-	matchRemoveHighlight: function(match) {
+	matchRemoveHighlight: function(e,match) {
 		this.field.set('value',this.lastSearch);
 	},
 	processMatch: function(data,options) {
@@ -164,13 +165,13 @@ Form.Searcher.Match = new Class({
 		this.element.removeEvents();
 		this.element = null;
 	},
-	highlight: function() {
+	highlight: function(e) {
 		this.element.addClass('highlighted');
-		this.fireEvent('onHighlight',this);
+		this.fireEvent('onHighlight',[e,this]);
 	},
-	removeHighlight: function() {
+	removeHighlight: function(e) {
 		this.element.removeClass('highlighted');
-		this.fireEvent('onRemoveHighlight',this);
+		this.fireEvent('onRemoveHighlight',[e,this]);
 	},
 	select: function() {
 		this.fireEvent('onSelect',this);
