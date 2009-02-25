@@ -26,9 +26,9 @@ Form.Searcher = new Class({
 		};
 		this.field = $(field).addEvents({
 			click: this.stopEvent,
-			focus: this.bound.focus,
-			keypress: this.bound.keypress
+			focus: this.bound.focus
 		});
+		this.field.addEvent(Browser.Engine.gecko ? 'keypress' : 'keydown', this.bound.keypress);
 		this.results = $(results).addEvents({
 			click: this.stopEvent
 		});
@@ -40,10 +40,8 @@ Form.Searcher = new Class({
 		this.fireEvent('filterStart',this);
 		var value = this.field.get('value').toLowerCase();
 		this.lastSearch = value;
-		this.resultsList.empty();
+		this.reset();
 		var matches = this.matches;
-		matches.each(function(match) { match.destroy(); });
-		matches.empty();
 		if (!value.match(this.options.search)) { return this.fireEvent('noMatch',this); }
 		var options = this.options.matchOptions;
 		var results = new Elements();
@@ -69,7 +67,6 @@ Form.Searcher = new Class({
 		}
 	},
 	focus: function(e) {
-		if (this.highlighted) { this.field.set('value',this.highlighted.data.name); }
 		this.fireEvent('focus',this);
 	},
 	keypress: function(e) {
@@ -138,6 +135,13 @@ Form.Searcher = new Class({
 		this.field.set('value',this.lastSearch);
 		this.field.blur();
 		this.fireEvent('quit',this);
+	},
+	reset: function() {
+		this.highlighted = null;
+		this.resultsList.empty();
+		this.matches.each(function(match) { match.destroy(); });
+		this.matches.empty();
+		this.fireEvent('reset',this);
 	},
 	stopEvent: function(e) {
 		if (!e) { return; }
