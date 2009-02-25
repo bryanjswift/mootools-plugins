@@ -35,9 +35,7 @@ Form.Slider = new Class({
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
 		var size = element.getStyle(dimension).toInt();
-log.info('size: ' + size);
-log.info('scrollSize: ' + element.getScrollSize()[xy]);
-		if (element.getScrollSize()[xy] <= size) { return; }
+		if (element.getFirst().getSize()[xy] * element.getChildren().length <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
 			buttonUp: this.clearButtonHoldInterval.bind(this),
@@ -159,7 +157,6 @@ log.info('scrollSize: ' + element.getScrollSize()[xy]);
 		$clear(this.buttonHoldInterval);
 	},
 	destroy: function() {
-log.info('destroying');
 		this.element = null;
 		this.scrollbar = null;
 		this.scrubber = null;
