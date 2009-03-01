@@ -85,6 +85,7 @@ Pagination = new Class({
 		if ($type(data) === 'array') { this.initializeArray(data); }
 		else { this.initializeObject(data); }
 		this.numberPages = Math.ceil(this.keys.length / this.options.pageSize);
+		this.page = 0;
 		this.getFirstPage();
 	},
 	updateOptions: function(options) {
