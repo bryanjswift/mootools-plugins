@@ -55,6 +55,7 @@ Form.Check = new Class({
 		this.element.addClass(this.config.checkedClass);
 		this.input.set('checked','checked').focus();
 		this.checked = true;
+		this.fireEvent('onCheck',this);
 	},
 	disable: function() {
 		this.element.addClass(this.config.disabledClass);
@@ -85,12 +86,12 @@ Form.Check = new Class({
 		} else {
 			this.check();
 		}
-		this.fireEvent(this.checked ? 'onCheck' : 'onUncheck',this);
 		this.fireEvent('onChange',this);
 	},
 	uncheck: function() {
 		this.element.removeClass(this.config.checkedClass);
 		this.input.erase('checked');
 		this.checked = false;
+		this.fireEvent('onUncheck',this);
 	}
 });
