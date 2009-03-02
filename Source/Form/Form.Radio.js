@@ -9,5 +9,17 @@ Form.Radio = new Class({
 	},
 	initialize: function(input,options) {
 		this.parent(input,options);
+	},
+	toggle: function(e) {
+		if (this.element.hasClass('checked') || this.disabled) { return; }
+		var evt;
+		if (e) { evt = new Event(e).stop(); }
+		if (this.checked) {
+			this.uncheck();
+		} else {
+			this.check();
+		}
+		this.fireEvent(this.checked ? 'onCheck' : 'onUncheck',this);
+		this.fireEvent('onChange',this);
 	}
 });
