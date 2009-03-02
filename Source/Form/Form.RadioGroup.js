@@ -45,7 +45,7 @@ Form.RadioGroup = new Class({
 	select: function(checkedRadio) {
 		var radios = this.checks;
 		radios.each(function(radio) {
-			if (radio.checked && radio.input.get('value') != checkedRadio.input.get('value')) { rad.toggle(); }
+			if (radio.checked && radio.input.get('value') != checkedRadio.input.get('value')) { radio.uncheck(); }
 		});
 	}
 });
