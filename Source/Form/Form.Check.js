@@ -12,7 +12,9 @@ Form.Check = new Class({
 	config: {
 		checkedClass: 'checked',
 		disabledClass: 'disabled',
-		highlightedClass: 'highlighted'
+		elementClass: 'check',
+		highlightedClass: 'highlighted',
+		storage: 'Form.Check::data'
 	},
 	disabled: false,
 	element: null,
@@ -29,10 +31,11 @@ Form.Check = new Class({
 		};
 		var bound = this.bound;
 		input = this.input = $(input);
-		this.label = document.getElement('label[for=' + input.get('id'));
+		var id = input.get('id');
+		this.label = document.getElement('label[for=' + id);
 		this.element = new Element('div',{
-			'class': input.get('class') + ' check',
-			id: input.get('id') + 'Check',
+			'class': input.get('class') + ' ' + this.config.elementClass,
+			id: id ? id + 'Check' : '',
 			events: {
 				click: bound.toggle,
 				mouseenter: bound.highlight,
@@ -42,7 +45,7 @@ Form.Check = new Class({
 		this.element.wraps(input);
 		if (this.options.checked) { this.check(); } else { this.uncheck(); }
 		if (this.options.disabled) { this.disable(); } else { this.enable(); }
-		input.store('Form.Check::data',this).addEvents({
+		input.store(this.config.storage,this).addEvents({
 			blur: bound.removeHighlight,
 			focus: bound.highlight
 		});
