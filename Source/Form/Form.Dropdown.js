@@ -74,7 +74,7 @@ Form.Dropdown = new Class({
 		var dropdownSelection = new Element('div',{'class': 'selection'});
 		var dropdownBackground = new Element('div',{'class': 'dropdownBackground'});
 		var selection = this.selection = new Element('span',{
-			'class': 'selection',
+			'class': 'selectionDisplay',
 			events: {click: this.bound.toggle}
 		});
 		var input = this.input = new Element('input',{
