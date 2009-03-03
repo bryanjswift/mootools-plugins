@@ -63,7 +63,7 @@ Form.Dropdown = new Class({
 	},
 	initializeCreateElements: function(select) {
 		var id = select.get('id');
-		var dropdown = this.element = new Element('div',{
+		var dropdown = new Element('div',{
 			'class': (select.get('class') + ' dropdown').trim(),
 			'id': (id && id !== '') ? id + 'Dropdown' : ''
 		});
@@ -73,11 +73,11 @@ Form.Dropdown = new Class({
 		dropdown.adopt(menu.adopt(list.adopt(options))); // dropdown adopts menu ; menu adopts list ; list adopts options
 		var dropdownSelection = new Element('div',{'class': 'selection'});
 		var dropdownBackground = new Element('div',{'class': 'dropdownBackground'});
-		var selection = this.selection = new Element('span',{
+		var selection = new Element('span',{
 			'class': 'selectionDisplay',
 			events: {click: this.bound.toggle}
 		});
-		var input = this.input = new Element('input',{
+		var input = new Element('input',{
 			type:'text',
 			id: id,
 			name: select.get('name'),
@@ -88,6 +88,9 @@ Form.Dropdown = new Class({
 		});
 		dropdownSelection.adopt(dropdownBackground,selection,input);
 		dropdown.adopt(dropdownSelection);
+		this.element = dropdown;
+		this.selection = selection;
+		this.input = input;
 		return options;
 	},
 	blur: function(e) { },
@@ -282,7 +285,7 @@ Form.Dropdown = new Class({
 			this.selected.highlight();
 			this.element.addEvents(events);
 			this.input.focus();
-			this.fireEvent('onExpand',this)
+			this.fireEvent('onExpand',this);
 		} else { // closing
 			this.element.removeClass('active').removeClass('dropdown-active');
 			this.selected.removeHighlight();
