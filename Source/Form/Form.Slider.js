@@ -16,6 +16,7 @@ Form.Slider = new Class({
 	dimension: null,
 	dragProperties: {on:false,downPosition:null},
 	element: null,
+	elementSize: null,
 	pageSize: null,
 	position: 0,
 	scrollbar: null,
@@ -35,7 +36,9 @@ Form.Slider = new Class({
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
 		var size = element.getStyle(dimension).toInt();
-		if (element.getFirst().getSize()[xy] * element.getChildren().length <= size) { return; }
+		var elementSize = 0;
+		element.getChildren().each(function(child) { elementSize = elementSize + child.getSize()[xy]; });
+		if (elementSize <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
 			buttonUp: this.clearButtonHoldInterval.bind(this),
@@ -54,7 +57,7 @@ Form.Slider = new Class({
 		var trackSize = scrollbar.getSize()[xy] - backSize - forwardSize;
 		var trackStyles = vertical ? {height:trackSize,position:'absolute','top':backSize} : {width:trackSize,position:'absolute','left':backSize};
 		this.track = scrollbar.getElement('div.scrollbarTrack').setStyles(trackStyles);
-		this.ratio = wrapper.getSize()[xy] / element.getSize()[xy];
+		this.ratio = wrapper.getSize()[xy] / elementSize;
 		var scrubber = scrollbar.getElement('div.scrollbarScrubber');
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		sides.each(function(side) {
@@ -64,6 +67,7 @@ Form.Slider = new Class({
 		// setup values on instance
 		this.dimension = positionDimension;
 		this.element = element;
+		this.elementSize = elementSize;
 		this.limit = trackSize - scrubber.getSize()[xy];
 		this.pageSize = size * this.ratio;
 		this.scrubber = scrubber;
@@ -199,7 +203,7 @@ Form.Slider = new Class({
 		var xy = this.xy;
 		var trackSize = this.trackSize;
 		this.element.setStyle(this.options.vertical ? 'height' : 'width','auto');
-		this.ratio = this.wrapper.getSize()[xy] / this.element.getSize()[xy];
+		this.ratio = this.wrapper.getSize()[xy] / this.elementSize;
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
