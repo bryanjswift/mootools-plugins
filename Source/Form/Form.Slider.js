@@ -36,7 +36,7 @@ Form.Slider = new Class({
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
 		var size = element.getStyle(dimension).toInt();
-		var elementSize = this.getElementSize(element);
+		var elementSize = this.getElementSize(element,xy);
 		if (elementSize <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
@@ -178,7 +178,7 @@ Form.Slider = new Class({
 	getCreateElement: function(scrollbar,clazz) {
 		return this.options.scrollbar ? scrollbar.getElement('.' + clazz).removeEvents() : new Element('div',{'class':clazz});
 	},
-	getElementSize: function(element) {
+	getElementSize: function(element,xy) {
 		var elementSize = 0;
 		element.getChildren().each(function(child) { elementSize = elementSize + child.getSize()[xy]; });
 		return elementSize;
@@ -206,7 +206,7 @@ Form.Slider = new Class({
 		var xy = this.xy;
 		var trackSize = this.trackSize;
 		this.element.setStyle(this.options.vertical ? 'height' : 'width','auto');
-		this.ratio = this.wrapper.getSize()[xy] / this.getElementSize(this.element);
+		this.ratio = this.wrapper.getSize()[xy] / this.getElementSize(this.element,xy);
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
