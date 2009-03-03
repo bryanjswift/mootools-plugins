@@ -71,12 +71,12 @@ Form.Dropdown = new Class({
 		var list = new Element('div',{'class': 'list'});
 		var options = new Element('ul',{'class': 'options'});
 		dropdown.adopt(menu.adopt(list.adopt(options))); // dropdown adopts menu ; menu adopts list ; list adopts options
-		var dropdownSelection = new Element('div',{'class': 'selection'});
-		var dropdownBackground = new Element('div',{'class': 'dropdownBackground'});
-		var selection = new Element('span',{
-			'class': 'selectionDisplay',
+		var dropdownSelection = new Element('div',{
+			'class': 'selection',
 			events: {click: this.bound.toggle}
 		});
+		var dropdownBackground = new Element('div',{'class': 'dropdownBackground'});
+		var selection = new Element('span',{'class': 'selectionDisplay'});
 		var input = new Element('input',{
 			type:'text',
 			id: id,
