@@ -36,8 +36,7 @@ Form.Slider = new Class({
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
 		var size = element.getStyle(dimension).toInt();
-		var elementSize = 0;
-		element.getChildren().each(function(child) { elementSize = elementSize + child.getSize()[xy]; });
+		var elementSize = this.getElementSize(element);
 		if (elementSize <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
@@ -67,7 +66,6 @@ Form.Slider = new Class({
 		// setup values on instance
 		this.dimension = positionDimension;
 		this.element = element;
-		this.elementSize = elementSize;
 		this.limit = trackSize - scrubber.getSize()[xy];
 		this.pageSize = size * this.ratio;
 		this.scrubber = scrubber;
@@ -180,6 +178,11 @@ Form.Slider = new Class({
 	getCreateElement: function(scrollbar,clazz) {
 		return this.options.scrollbar ? scrollbar.getElement('.' + clazz).removeEvents() : new Element('div',{'class':clazz});
 	},
+	getElementSize: function(element) {
+		var elementSize = 0;
+		element.getChildren().each(function(child) { elementSize = elementSize + child.getSize()[xy]; });
+		return elementSize;
+	},
 	moveContent: function(ratio,animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
 		// fireEvent appears to not pass args which evaluate to false
@@ -203,7 +206,7 @@ Form.Slider = new Class({
 		var xy = this.xy;
 		var trackSize = this.trackSize;
 		this.element.setStyle(this.options.vertical ? 'height' : 'width','auto');
-		this.ratio = this.wrapper.getSize()[xy] / this.elementSize;
+		this.ratio = this.wrapper.getSize()[xy] / this.getElementSize(this.element);
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
