@@ -249,7 +249,7 @@ Form.Dropdown = new Class({
 		}
 	},
 	mouseenterDropdown: function() { $clear(this.collapseInterval); },
-	mouseleaveDropdown: function() { this.collapseInterval = this.collapse.delay(this.options.mouseLeaveDelay,this); },
+	mouseleaveDropdown: function() { this.collapseInterval = this.options.mouseLeaveDelay ? this.collapse.delay(this.options.mouseLeaveDelay,this) : null; },
 	mousemove: function() {
 		this.dropdownOptions.each(function(option) { option.enable(); });
 		document.removeEvent('mousemove',this.bound.mousemove);
