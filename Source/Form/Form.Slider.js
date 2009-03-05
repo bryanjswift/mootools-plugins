@@ -205,14 +205,15 @@ Form.Slider = new Class({
 		this.fireEvent('onRecalibrateStart',this);
 		var xy = this.xy;
 		var trackSize = this.trackSize;
-		this.element.setStyle(this.options.vertical ? 'height' : 'width','auto');
+		var vertical = this.options.vertical;
+		if (!Browser.Engine.trident) { this.element.setStyle(vertical ? 'height' : 'width','auto'); }
 		this.ratio = this.wrapper.getSize()[xy] / this.getElementSize(this.element,xy);
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
-		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
+		(vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
 			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
 		});
-		scrubber.setStyle(this.options.vertical ? 'height' : 'width',scrubberSize);
+		scrubber.setStyle(vertical ? 'height' : 'width',scrubberSize);
 		this.limit = trackSize - scrubber.getSize()[xy];
 		if (this.position > this.limit) { this.setScrubberPosition(this.limit,false); }
 		this.fireEvent('onRecalibrateFinish',this);
