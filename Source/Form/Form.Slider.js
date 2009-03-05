@@ -179,6 +179,7 @@ Form.Slider = new Class({
 		return this.options.scrollbar ? scrollbar.getElement('.' + clazz).removeEvents() : new Element('div',{'class':clazz});
 	},
 	getElementSize: function(element,xy) {
+		if (Browser.Engine.trident) { return element.getScrollSize()[xy]; }
 		var elementSize = 0;
 		element.getChildren().each(function(child) { elementSize = elementSize + child.getSize()[xy]; });
 		return elementSize;
