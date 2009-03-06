@@ -12,7 +12,7 @@ Form.Searcher = new Class({
 	config: {},
 	data: [], // Array of <Data>
 	field: null, // <Element> input field
-	highlighted: null, // <DataMatch>
+	highlighted: null, // <Form.Searcher.Match>
 	matches: [], // Array of <Form.Searcher.Match>
 	results: null, // <Element> results wrapper
 	resultsList: null, // <Element> where matching results get added as li's
@@ -85,7 +85,7 @@ Form.Searcher = new Class({
 			case 40: // down
 				if (!highlighted) { this.resultsList.getFirst().retrieve('Form.Searcher::match').highlight(e); break; }
 				match = highlighted.element.getNext();
-				highlighted.element.retrieve('Form.Searcher::match').removeHighlight(e);
+				highlighted.removeHighlight(e);
 				if (match) { match.retrieve('Form.Searcher::match').highlight(e); }
 				else { this.highlighted = null; }
 				break;
@@ -93,13 +93,13 @@ Form.Searcher = new Class({
 			case 38: // up
 				if (!highlighted) { this.resultsList.getLast().retrieve('Form.Searcher::match').highlight(e); break; }
 				match = highlighted.element.getPrevious();
-				highlighted.element.retrieve('Form.Searcher::match').removeHighlight(e);
+				highlighted.removeHighlight(e);
 				if (match) { match.retrieve('Form.Searcher::match').highlight(e); }
 				else { this.highlighted = null; }
 				break;
 			case 13: // enter
 				evt.stop();
-				if (highlighted) { highlighted.retrieve('Form.Searcher::match').select(); }
+				if (highlighted) { highlighted.select(); }
 				break;
 			case 8: // backspace
 			case 32: // space
