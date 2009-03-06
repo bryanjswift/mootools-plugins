@@ -8,14 +8,14 @@ Form.RadioGroup = new Class({
 		initialValues: {}
 	},
 	bound: {},
-	checks: [],
+	radios: [],
+	value: null,
 	initialize: function(group,options) {
 		if (!Form.Radio) { throw 'required Class Form.Radio not found'; }
 		this.setOptions(options);
 		this.bound = { select: this.select.bind(this) };
 		group = $(group);
 		if (!group) { return this; }
-		var checks = this.checks;
 		var radioOptions = this.options.radioOptions;
 		var radios = group.getElements('input[type=radio]');
 		radios.each(this.addCheck,this);
@@ -27,25 +27,30 @@ Form.RadioGroup = new Class({
 		radioOptions.disabled = radio.get('disabled');
 		var check = radio.retrieve('Form.Radio::data') || new Form.Radio(radio,$extend(radioOptions,this.options.radioOptions));
 		check.addEvent('onCheck',this.bound.select);
+		if (check.checked) { this.value = check.value; }
 		radio.store('Form.RadioGroup::data',this);
-		this.checks.push(check);
+		this.radios.push(check);
 	},
 	disable: function() {
-		var radios = this.checks;
+		var radios = this.radios;
 		radios.each(function(radio) {
 			radio.disable();
 		});
 	},
 	enable: function() {
-		var radios = this.checks;
+		var radios = this.radios;
 		radios.each(function(radio) {
 			radio.enable();
 		});
 	},
 	select: function(checkedRadio) {
-		var radios = this.checks;
+		var radios = this.radios;
 		radios.each(function(radio) {
-			if (radio.checked && radio.input.get('value') != checkedRadio.input.get('value')) { radio.uncheck(); }
+			if (radio.checked && radio.value != checkedRadio.value) { radio.uncheck(); }
 		});
+		if (checkedRadio.value !== this.value) {
+			this.value = checkedRadio.value;
+			this.fireEvent('onChange',this);
+		}
 	}
 });
