@@ -11,30 +11,30 @@ Form.Searcher = new Class({
 	bound: {},
 	config: {},
 	data: [], // Array of <Data>
+	field: null, // <Element> input field
 	highlighted: null, // <DataMatch>
-	matches: [],
+	matches: [], // Array of <Form.Searcher.Match>
+	results: null, // <Element> results wrapper
+	resultsList: null, // <Element> where matching results get added as li's
 	initialize: function(field,results,options) {
 		if (!field || !results) { return; }
 		this.setOptions(options);
 		this.bound = {
 			filter: this.filter.bind(this),
+			blur: this.blur.bind(this),
 			focus: this.focus.bind(this),
 			keypress: this.keypress.bind(this),
 			matchHighlight: this.matchHighlight.bind(this),
 			matchRemoveHighlight: this.matchRemoveHighlight.bind(this),
 			quit: this.quit.bind(this)
 		};
-		this.field = $(field).addEvents({
-			click: this.stopEvent,
-			focus: this.bound.focus
-		});
+		this.field = $(field).addEvents({blur:this.bound.blur, click:this.stopEvent, focus:this.bound.focus});
 		this.field.addEvent(Browser.Engine.gecko ? 'keypress' : 'keydown', this.bound.keypress);
-		this.results = $(results).addEvents({
-			click: this.stopEvent
-		});
+		this.results = $(results).addEvents({click:this.stopEvent});
 		this.resultsList = this.results.getElement('ul').empty();
 		document.addEvent('click',this.bound.quit);
 	},
+	blur: function(e) { this.fireEvent('blur',this); },
 	// gets added as keyup event on alphanumeric keypress
 	filter: function() {
 		this.fireEvent('filterStart',this);
@@ -66,9 +66,7 @@ Form.Searcher = new Class({
 			else { this.fireEvent('notScrollable',this); }
 		}
 	},
-	focus: function(e) {
-		this.fireEvent('focus',this);
-	},
+	focus: function(e) { this.fireEvent('focus',this); },
 	keypress: function(e) {
 		var evt = new Event(e);
 		var code = evt.code;
@@ -120,9 +118,7 @@ Form.Searcher = new Class({
 		this.highlighted = match;
 		if (evt.type.match(/^key/)) { this.field.set('value',match.data.name); }
 	},
-	matchRemoveHighlight: function(e,match) {
-		this.field.set('value',this.lastSearch);
-	},
+	matchRemoveHighlight: function(e,match) { this.field.set('value',this.lastSearch); },
 	processMatch: function(data,options) {
 		var match = new Form.Searcher.Match(data,options);
 		match.addEvents({
@@ -132,7 +128,7 @@ Form.Searcher = new Class({
 		return match;
 	},
 	quit: function(e) {
-		this.field.set('value',this.lastSearch);
+		if (this.lastSearch) { this.field.set('value',this.lastSearch); }
 		this.field.blur();
 		this.fireEvent('quit',this);
 	},
@@ -178,7 +174,5 @@ Form.Searcher.Match = new Class({
 		this.element.removeClass('highlighted');
 		this.fireEvent('removeHighlight',[e,this]);
 	},
-	select: function() {
-		this.fireEvent('select',this);
-	}
+	select: function() { this.fireEvent('select',this); }
 });
