@@ -23,8 +23,8 @@ Form.CheckGroup = new Class({
 		var checkOptions = {};
 		checkOptions.checked = initialValues ? initialValues.contains(checkbox.get('value')) : checkbox.get('checked');
 		checkOptions.disabled = checkbox.get('disabled');
-		var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,$extend(checkOptions,this.options.checkOptions));
 		checkbox.store('Form.CheckGroup::data',this);
+		var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,$extend(checkOptions,this.options.checkOptions));
 		this.checks.push(check);
 	},
 	checkAll: function() {
