@@ -20,6 +20,7 @@ Form.Check = new Class({
 	element: null,
 	input: null,
 	label: null,
+	value: null,
 	initialize: function(input,options) {
 		this.setOptions(options);
 		this.bound = {
@@ -43,6 +44,7 @@ Form.Check = new Class({
 			}
 		});
 		this.element.wraps(input);
+		this.value = input.get('value');
 		if (this.options.checked) { this.check(); } else { this.uncheck(); }
 		if (this.options.disabled) { this.disable(); } else { this.enable(); }
 		input.store(this.config.storage,this).addEvents({
