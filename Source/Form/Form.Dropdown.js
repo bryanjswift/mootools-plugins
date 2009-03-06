@@ -70,7 +70,7 @@ Form.Dropdown = new Class({
 		var menu = new Element('div',{'class': 'menu'});
 		var list = new Element('div',{'class': 'list'});
 		var options = new Element('ul',{'class': 'options'});
-		dropdown.adopt(menu.adopt(list.adopt(options))); // dropdown adopts menu ; menu adopts list ; list adopts options
+		dropdown.adopt(menu.adopt(list.adopt(options)));
 		var dropdownSelection = new Element('div',{
 			'class': 'selection',
 			events: {click: this.bound.toggle}
@@ -105,6 +105,17 @@ Form.Dropdown = new Class({
 		this.element = null;
 		this.selection = null;
 		this.input = null;
+	},
+	disable: function() {
+		this.collapse();
+		this.input.set('disabled','disabled').removeEvents({blur:this.bound.blur,focus:this.bound.focus});
+		this.selection.getParent().removeEvent('click',this.bound.toggle);
+		this.fireEvent('onDisable',this);
+	},
+	enable: function() {
+		this.input.erase('disabled').addEvents({blur:this.bound.blur,focus:this.bound.focus});
+		this.selection.getParent().addEvent('click',this.bound.toggle);
+		this.fireEvent('onEnable',this);
 	},
 	expand: function() {
 		if (this.open) { return; }
