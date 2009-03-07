@@ -13,6 +13,7 @@ Form.Dropdown = new Class({
 	bound: {},
 	dropdownOptions: [],
 	element: null,
+	events: {},
 	highlighted: null,
 	input: null,
 	open: true,
@@ -38,6 +39,7 @@ Form.Dropdown = new Class({
 			select: this.select.bind(this),
 			toggle: this.toggle.bind(this)
 		};
+		this.events = {mouseenter:this.bound.mouseenterDropdown, mouseleave:this.bound.mouseleaveDropdown};
 		this.value = this.options.initialValue;
 		var dropdownOptions = this.dropdownOptions;
 		var selectOptions = this.options.selectOptions;
@@ -94,9 +96,12 @@ Form.Dropdown = new Class({
 		return options;
 	},
 	blur: function(e) { },
-	collapse: function() {
-		if (!this.open) { return; }
-		this.toggle();
+	collapse: function(e) {
+		this.open = false;
+		this.element.removeClass('active').removeClass('dropdown-active');
+		this.selected.removeHighlight();
+		this.element.removeEvents(this.events);
+		this.fireEvent('onCollapse',[this,e]);
 	},
 	deselect: function(option) {
 		option.deselect();
@@ -117,9 +122,15 @@ Form.Dropdown = new Class({
 		this.selection.getParent().addEvent('click',this.bound.toggle);
 		this.fireEvent('onEnable',this);
 	},
-	expand: function() {
-		if (this.open) { return; }
-		this.toggle();
+	expand: function(e) {
+		$clear(this.collapseInterval);
+		e ? new Event(e).stop() : null;
+		this.open = true;
+		this.input.focus();
+		this.element.addClass('active').addClass('dropdown-active');
+		this.selected.highlight();
+		this.element.addEvents(this.events);
+		this.fireEvent('onExpand',[this,e]);
 	},
 	focus: function(e) { this.expand(); },
 	foundMatch: function() {
@@ -130,6 +141,7 @@ Form.Dropdown = new Class({
 		var optionsLength = shortlist.length;
 		var excludedValues = this.options.excludedValues;
 		var found = false;
+		if (!optionsLength) { return; }
 		var option;
 		do {
 			option = shortlist[i];
@@ -159,37 +171,31 @@ Form.Dropdown = new Class({
 	keypress: function(e) {
 		if (!this.open) { return; }
 		var evt = new Event(e);
-		var current = this.highlighted.element;
-		var previous, next;
 		var code = evt.code;
 		var key = evt.key;
 		var typed = this.typed;
-		var i, options, option, optionsLength, found, first, excludedValues, shortlist;
+		var match, i, options, option, optionsLength, found, first, excludedValues, shortlist;
 		switch(code) {
 			case 38: // up
 			case 37: // left
-				evt.stop();
-				previous = current.getPrevious();
-				if (!previous) {
-					previous = current.getParent().getLast();
-				}
 				if (typed.pressed > 0) { typed.pressed = typed.pressed - 1; }
-				this.keyboardHighlight(previous.retrieve('Form.SelectOption::data'));
+				if (!this.highlighted) { this.keyboardHighlight(this.dropdownOptions.getLast()); break; }
+				match = this.highlighted.element.getPrevious();
+				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions.getLast()
+				this.keyboardHighlight(match);
 				break;
 			case 40: // down
 			case 39: // right
-				evt.stop();
-				next = current.getNext();
-				if (!next) {
-					next = current.getParent().getFirst();
-				}
 				if (typed.shortlist.length > 0) { typed.pressed = typed.pressed + 1; }
+				if (!this.highlighted) { this.keyboardHighlight(this.dropdownOptions[0]); break; }
+				match = this.highlighted.element.getNext();
+				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions[0];
 				this.keyboardHighlight(next.retrieve('Form.SelectOption::data'));
 				break;
 			case 13: // enter
 				evt.stop();
-			case 9: // tab - skips the stop event but clicks the item
-				current.retrieve('Form.SelectOption::data').select();
+			case 9: // tab - skips the stop event but selects the item
+				this.highlighted.select();
 				break;
 			case 27: // esc
 				evt.stop();
@@ -283,25 +289,10 @@ Form.Dropdown = new Class({
 		this.selected = option;
 		this.fireEvent('onSelect',[option]);
 		if (oldValue !== this.value) { this.fireEvent('onChange',[this]); }
-		this.collapse();
+		this.collapse(e);
 	},
 	toggle: function(e) {
-		var evt = e ? new Event(e).stop() : null;
-		$clear(this.collapseInterval);
-		this.fireEvent(this.open ? 'onClose' : 'onOpen',this);
-		this.open = !this.open;
-		var events = {mouseenter:this.bound.mouseenterDropdown, mouseleave:this.bound.mouseleaveDropdown};
-		if (this.open) { // opening
-			this.element.addClass('active').addClass('dropdown-active');
-			this.selected.highlight();
-			this.element.addEvents(events);
-			this.input.focus();
-			this.fireEvent('onExpand',this);
-		} else { // closing
-			this.element.removeClass('active').removeClass('dropdown-active');
-			this.selected.removeHighlight();
-			this.element.removeEvents(events);
-			this.fireEvent('onCollapse',this);
-		}
+		if (this.open) { this.collapse(e); }
+		else { this.expand(e); }
 	}
 });
