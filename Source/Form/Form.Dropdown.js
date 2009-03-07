@@ -51,7 +51,7 @@ Form.Dropdown = new Class({
 				'onHighlight':this.bound.highlightOption,
 				'onRemoveHighlight':this.bound.removeHighlightOption,
 				'onSelect':this.bound.select
-			});
+			}).owner = this;
 			if (option.value === this.options.initialValue) { this.select(option); }
 			dropdownOptions.push(option);
 			optionsList.adopt(option.element);
@@ -133,7 +133,7 @@ Form.Dropdown = new Class({
 		this.fireEvent('onExpand',[this,e]);
 	},
 	focus: function(e) { this.expand(); },
-	foundMatch: function() {
+	foundMatch: function(e) {
 		var typed = this.typed;
 		var shortlist = typed.shortlist;
 		var value = typed.value;
@@ -147,7 +147,7 @@ Form.Dropdown = new Class({
 			option = shortlist[i];
 			if (option.text.toLowerCase().indexOf(value) === 0 && !excludedValues.contains(option.value)) {
 				found = true;
-				this.keyboardHighlight(option);
+				option.highlight(e);
 				typed.pressed = i + 1;
 				i = optionsLength;
 			}
@@ -158,10 +158,6 @@ Form.Dropdown = new Class({
 	highlightOption: function(option) {
 		if (this.highlighted) { this.highlighted.removeHighlight(); }
 		this.highlighted = option;
-	},
-	keyboardHighlight: function(option) {
-		option.highlight();
-		this.fireEvent('onKeyboardHighlight',[option,this]);
 	},
 	keydown: function(e) {
 		if (!this.open) { return; }
@@ -179,18 +175,18 @@ Form.Dropdown = new Class({
 			case 38: // up
 			case 37: // left
 				if (typed.pressed > 0) { typed.pressed = typed.pressed - 1; }
-				if (!this.highlighted) { this.keyboardHighlight(this.dropdownOptions.getLast()); break; }
+				if (!this.highlighted) { this.dropdownOptions.getLast().highlight(e); break; }
 				match = this.highlighted.element.getPrevious();
 				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions.getLast()
-				this.keyboardHighlight(match);
+				match.highlight(e);
 				break;
 			case 40: // down
 			case 39: // right
 				if (typed.shortlist.length > 0) { typed.pressed = typed.pressed + 1; }
-				if (!this.highlighted) { this.keyboardHighlight(this.dropdownOptions[0]); break; }
+				if (!this.highlighted) { this.dropdownOptions[0].highlight(e); break; }
 				match = this.highlighted.element.getNext();
 				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions[0];
-				this.keyboardHighlight(match);
+				match.highlight(e);
 				break;
 			case 13: // enter
 				evt.stop();
@@ -226,7 +222,7 @@ Form.Dropdown = new Class({
 				} else {
 					if (key === typed.lastKey) { // check for match, if no match get next
 						typed.value = typed.value + key;
-						if (this.foundMatch()) { // got a match so break
+						if (this.foundMatch(e)) { // got a match so break
 							typed.timer = this.resetTyped.delay(500,this);
 							break;
 						} else { // no match fall through
@@ -240,7 +236,7 @@ Form.Dropdown = new Class({
 						typed.value = typed.value + key;
 						typed.startkey = typed.value.substring(0,1);
 						typed.lastKey = key;
-						this.foundMatch();
+						this.foundMatch(e);
 						break;
 					}
 				}
@@ -253,13 +249,13 @@ Form.Dropdown = new Class({
 					if (option.text.toLowerCase().indexOf(key) === 0 && !excludedValues.contains(option.value)) {
 						if (found === 0) { first = option; }
 						found = found + 1;
-						if (found === typed.pressed) { this.keyboardHighlight(option); }
+						if (found === typed.pressed) { option.highlight(e); }
 						shortlist.push(option);
 					}
 					i = i + 1;
 				} while(i < optionsLength);
 				if (typed.pressed > found) {
-					this.keyboardHighlight(first);
+					first.highlight(e);
 					typed.pressed = 1;
 				}
 				break;
@@ -287,8 +283,8 @@ Form.Dropdown = new Class({
 		this.value = option.value;
 		this.input.set('value',option.value);
 		this.selected = option;
-		this.fireEvent('onSelect',[option]);
-		if (oldValue !== this.value) { this.fireEvent('onChange',[this]); }
+		this.fireEvent('onSelect',[option,e]);
+		if (oldValue !== this.value) { this.fireEvent('onChange',[this,e]); }
 		this.collapse(e);
 	},
 	toggle: function(e) {
