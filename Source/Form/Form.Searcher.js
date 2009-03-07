@@ -25,7 +25,6 @@ Form.Searcher = new Class({
 			focus: this.focus.bind(this),
 			keypress: this.keypress.bind(this),
 			matchHighlight: this.matchHighlight.bind(this),
-			matchRemoveHighlight: this.matchRemoveHighlight.bind(this),
 			quit: this.quit.bind(this)
 		};
 		this.field = $(field).addEvents({blur:this.bound.blur, click:this.stopEvent, focus:this.bound.focus});
@@ -113,17 +112,13 @@ Form.Searcher = new Class({
 				break;
 		}
 	},
-	matchHighlight: function(e,match) {
-		var evt = new Event(e);
+	matchHighlight: function(match,e) {
 		this.highlighted = match;
-		if (evt.type.match(/^key/)) { this.field.set('value',match.data.name); }
 	},
-	matchRemoveHighlight: function(e,match) { this.field.set('value',this.lastSearch); },
 	processMatch: function(data,options) {
 		var match = new Form.Searcher.Match(data,options);
 		match.addEvents({
-			onHighlight: this.bound.matchHighlight,
-			onRemoveHighlight: this.bound.matchRemoveHighlight
+			onHighlight: this.bound.matchHighlight
 		});
 		return match;
 	},
@@ -168,11 +163,11 @@ Form.Searcher.Match = new Class({
 	},
 	highlight: function(e) {
 		this.element.addClass('highlighted');
-		this.fireEvent('highlight',[e,this]);
+		this.fireEvent('highlight',[this,e]);
 	},
 	removeHighlight: function(e) {
 		this.element.removeClass('highlighted');
-		this.fireEvent('removeHighlight',[e,this]);
+		this.fireEvent('removeHighlight',[this,e]);
 	},
 	select: function() { this.fireEvent('select',this); }
 });
