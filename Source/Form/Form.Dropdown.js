@@ -161,7 +161,7 @@ Form.Dropdown = new Class({
 	},
 	keyboardHighlight: function(option) {
 		option.highlight();
-		this.fireEvent('onKeyboardHighlight',option);
+		this.fireEvent('onKeyboardHighlight',[option,this]);
 	},
 	keydown: function(e) {
 		if (!this.open) { return; }
@@ -190,7 +190,7 @@ Form.Dropdown = new Class({
 				if (!this.highlighted) { this.keyboardHighlight(this.dropdownOptions[0]); break; }
 				match = this.highlighted.element.getNext();
 				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions[0];
-				this.keyboardHighlight(next.retrieve('Form.SelectOption::data'));
+				this.keyboardHighlight(match);
 				break;
 			case 13: // enter
 				evt.stop();
