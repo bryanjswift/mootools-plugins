@@ -60,13 +60,13 @@ Form.SelectOption = new Class({
 		this.element.addEvents({mouseenter:this.bound.highlight, mouseleave:this.bound.removeHighlight});
 		this.fireEvent('onEnable',this);
 	},
-	highlight: function() {
-		this.fireEvent('onHighlight',this);
+	highlight: function(e) {
+		this.fireEvent('onHighlight',[this,e]);
 		this.element.addClass(this.config.highlightedClass);
 		return this;
 	},
-	removeHighlight: function() {
-		this.fireEvent('onRemoveHighlight',this);
+	removeHighlight: function(e) {
+		this.fireEvent('onRemoveHighlight',[this,e]);
 		this.element.removeClass(this.config.highlightedClass);
 		return this;
 	},
