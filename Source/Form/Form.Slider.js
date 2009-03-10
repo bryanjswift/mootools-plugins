@@ -195,12 +195,12 @@ Form.Slider = new Class({
 	pageBackward: function(e) {
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position - (this.pageSize * 0.25));
-		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageBackward.delay(150,this,[e]); }
+		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageBackward.delay(150,this); }
 	},
 	pageForward: function(e) {
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position + (this.pageSize * 0.25));
-		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this,[e]); }
+		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this); }
 	},
 	recalibrate: function() {
 		this.fireEvent('onRecalibrateStart',this);
