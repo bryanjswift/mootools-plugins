@@ -113,7 +113,7 @@ Form.Searcher = new Class({
 		}
 	},
 	matchHighlight: function(match,e) {
-		this.highlighted.removeHighlight(e);
+		if (this.highlighted) { this.highlighted.removeHighlight(e); }
 		this.highlighted = match;
 	},
 	processMatch: function(data,options) {
@@ -170,4 +170,3 @@ Form.Searcher.Match = new Class({
 	},
 	select: function() { this.fireEvent('select',this); }
 });
-
