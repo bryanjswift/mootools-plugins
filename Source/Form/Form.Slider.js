@@ -192,15 +192,15 @@ Form.Slider = new Class({
 		var position = -ratio * list.getSize()[this.xy];
 		list.get('tween')[animate ? 'start' : 'set'](this.dimension,position);
 	},
-	pageBackward: function(e) {
+	pageBackward: function(e,fromDelay) {
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position - (this.pageSize * 0.25));
-		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageBackward.delay(150,this); }
+		if (evt && evt.type === 'mousedown' || fromDelay) { this.buttonHoldInterval = this.pageBackward.delay(150,this,[null,true]); }
 	},
-	pageForward: function(e) {
+	pageForward: function(e,fromDelay) {
 		var evt = e ? new Event(e).stop() : null;
 		this.setScrubberPosition(this.position + (this.pageSize * 0.25));
-		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this); }
+		if (evt && evt.type === 'mousedown' || fromDelay) { this.buttonHoldInterval = this.pageForward.delay(150,this,[null,true]); }
 	},
 	recalibrate: function() {
 		this.fireEvent('onRecalibrateStart',this);
