@@ -28,7 +28,7 @@ Form.Searcher = new Class({
 			quit: this.quit.bind(this)
 		};
 		this.field = $(field).addEvents({blur:this.bound.blur, click:this.stopEvent, focus:this.bound.focus});
-		this.field.addEvent(Browser.Engine.gecko ? 'keypress' : 'keydown', this.bound.keypress);
+		this.field.addEvent((Browser.Engine.gecko || Browser.Engine.presto) ? 'keypress' : 'keydown', this.bound.keypress);
 		this.results = $(results).addEvents({click:this.stopEvent});
 		this.resultsList = this.results.getElement('ul').empty();
 		document.addEvent('click',this.bound.quit);
