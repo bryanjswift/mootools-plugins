@@ -113,13 +113,12 @@ Form.Searcher = new Class({
 		}
 	},
 	matchHighlight: function(match,e) {
+		this.highlighted.removeHighlight(e);
 		this.highlighted = match;
 	},
 	processMatch: function(data,options) {
 		var match = new Form.Searcher.Match(data,options);
-		match.addEvents({
-			onHighlight: this.bound.matchHighlight
-		});
+		match.addEvent('onHighlight',this.bound.matchHighlight);
 		return match;
 	},
 	quit: function(e) {
@@ -171,3 +170,4 @@ Form.Searcher.Match = new Class({
 	},
 	select: function() { this.fireEvent('select',this); }
 });
+
