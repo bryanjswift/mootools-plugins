@@ -207,7 +207,7 @@ Form.Slider = new Class({
 		var xy = this.xy;
 		var trackSize = this.trackSize;
 		var vertical = this.options.vertical;
-		if (!Browser.Engine.trident) { this.element.setStyle(vertical ? 'height' : 'width','auto'); }
+		this.element.addClass('recalibrating').setStyle(vertical ? 'height' : 'width','auto');
 		this.ratio = this.wrapper.getSize()[xy] / this.getElementSize(this.element,xy);
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
@@ -217,6 +217,7 @@ Form.Slider = new Class({
 		scrubber.setStyle(vertical ? 'height' : 'width',scrubberSize);
 		this.limit = trackSize - scrubber.getSize()[xy];
 		if (this.position > this.limit) { this.setScrubberPosition(this.limit,false); }
+		this.element.removeClass('recalibrating');
 		this.fireEvent('onRecalibrateFinish',this);
 	},
 	scroll: function(e) {
