@@ -20,8 +20,9 @@ Form.Searcher = new Class({
 		if (!field || !results) { return; }
 		this.setOptions(options);
 		this.bound = {
-			filter: this.filter.bind(this),
+			addMouseEvents: this.addMouseEvents.pass([true],this),
 			blur: this.blur.bind(this),
+			filter: this.filter.bind(this),
 			focus: this.focus.bind(this),
 			keypress: this.keypress.bind(this),
 			matchHighlight: this.matchHighlight.bind(this),
@@ -32,6 +33,11 @@ Form.Searcher = new Class({
 		this.results = $(results).addEvents({click:this.stopEvent});
 		this.resultsList = this.results.getElement('ul').empty();
 		document.addEvent('click',this.bound.quit);
+	},
+	addRemoveMouseEvents: function(add) {
+		document[add ? 'removeEvent' : 'addEvent']('mousemove',this.bound.addMouseEvents);
+		var func = add ? 'addEvent' : 'removeEvent';
+		this.matches.each(function(match) { match.element[func]({mouseenter:match.bound.highlight, mouseleave:match.bound.removeHighlight}); });
 	},
 	blur: function(e) { this.fireEvent('blur',this); },
 	// gets added as keyup event on alphanumeric keypress
@@ -71,6 +77,7 @@ Form.Searcher = new Class({
 		var code = evt.code;
 		var key = evt.key;
 		var highlighted = this.highlighted;
+		this.addRemoveMouseEvents(false);
 		var match;
 		this.field.removeEvent('keyup',this.bound.filter);
 		switch(code) {
@@ -146,12 +153,13 @@ Form.Searcher.Match = new Class({
 	initialize: function(data,options) {
 		this.setOptions(options);
 		this.data = data;
+		this.bound = {
+			highlight: this.highlight.bind(this),
+			removeHighlight: this.removeHighlight.bind(this),
+			select: this.select.bind(this)
+		};
 		this.element = new Element('li',{
-			events: {
-				click: this.select.bind(this),
-				mouseenter: this.highlight.bind(this),
-				mouseleave: this.removeHighlight.bind(this)
-			},
+			events: {click:this.bound.select, mouseenter:this.bound.highlight, mouseleave:this.bound.removeHighlight},
 			html: data.name
 		});
 		this.element.store('Form.Searcher::match',this);
