@@ -25,7 +25,6 @@ Form.Searcher = new Class({
 			filter: this.filter.bind(this),
 			focus: this.focus.bind(this),
 			keypress: this.keypress.bind(this),
-			matchHighlight: this.matchHighlight.bind(this),
 			quit: this.quit.bind(this)
 		};
 		this.field = $(field).addEvents({blur:this.bound.blur, click:this.stopEvent, focus:this.bound.focus});
@@ -36,8 +35,9 @@ Form.Searcher = new Class({
 	},
 	addRemoveMouseEvents: function(add) {
 		document[add ? 'removeEvent' : 'addEvent']('mousemove',this.bound.addMouseEvents);
-		var func = add ? 'addEvent' : 'removeEvent';
-		this.matches.each(function(match) { match.element[func]({mouseenter:match.bound.highlight, mouseleave:match.bound.removeHighlight}); });
+		var func = add ? 'addEvent' : 'removeEvents';
+		if (add) { this.matches.each(function(match) { match.element[func]('mouseenter',this.matchHighlight.bindWithEvent(this,[match.element])); },this); }
+		else { this.matches.each(function(match) { match.element[func]('mouseenter'); }); }
 	},
 	blur: function(e) { this.fireEvent('blur',this); },
 	// gets added as keyup event on alphanumeric keypress
@@ -89,19 +89,15 @@ Form.Searcher = new Class({
 				evt.stop();
 			case 39: // right
 			case 40: // down
-				if (!highlighted) { this.resultsList.getFirst().retrieve('Form.Searcher::match').highlight(e); break; }
-				match = highlighted.element.getNext();
-				highlighted.removeHighlight(e);
-				if (match) { match.retrieve('Form.Searcher::match').highlight(e); }
-				else { this.highlighted = null; }
+				if (!highlighted) { match = this.resultsList.getFirst(); }
+				else { match = highlighted.element.getNext(); }
+				this.matchHighlight(e, match);
 				break;
 			case 37: // left
 			case 38: // up
-				if (!highlighted) { this.resultsList.getLast().retrieve('Form.Searcher::match').highlight(e); break; }
-				match = highlighted.element.getPrevious();
-				highlighted.removeHighlight(e);
-				if (match) { match.retrieve('Form.Searcher::match').highlight(e); }
-				else { this.highlighted = null; }
+				if (!highlighted) { match = this.resultsList.getLast(); }
+				else { match = highlighted.element.getPrevious(); }
+				this.matchHighlight(e, match);
 				break;
 			case 13: // enter
 				evt.stop();
@@ -119,13 +115,14 @@ Form.Searcher = new Class({
 				break;
 		}
 	},
-	matchHighlight: function(match,e) {
+	matchHighlight: function(e,match) {
 		if (this.highlighted) { this.highlighted.removeHighlight(e); }
+		if (match) { match = match.retrieve('Form.Searcher::match').highlight(e); }
 		this.highlighted = match;
 	},
 	processMatch: function(data,options) {
 		var match = new Form.Searcher.Match(data,options);
-		match.addEvent('onHighlight',this.bound.matchHighlight);
+		match.element.addEvent('mouseenter',this.matchHighlight.bindWithEvent(this,[match.element]));
 		return match;
 	},
 	quit: function(e) {
@@ -153,13 +150,7 @@ Form.Searcher.Match = new Class({
 	initialize: function(data,options) {
 		this.setOptions(options);
 		this.data = data;
-		this.bound = {
-			highlight: this.highlight.bind(this),
-			removeHighlight: this.removeHighlight.bind(this),
-			select: this.select.bind(this)
-		};
 		this.element = new Element('li',{
-			events: {click:this.bound.select, mouseenter:this.bound.highlight, mouseleave:this.bound.removeHighlight},
 			html: data.name
 		});
 		this.element.store('Form.Searcher::match',this);
@@ -171,6 +162,7 @@ Form.Searcher.Match = new Class({
 	highlight: function(e) {
 		this.element.addClass('highlighted');
 		this.fireEvent('highlight',[this,e]);
+		return this;
 	},
 	removeHighlight: function(e) {
 		this.element.removeClass('highlighted');
