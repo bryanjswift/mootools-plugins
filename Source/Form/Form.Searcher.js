@@ -20,7 +20,7 @@ Form.Searcher = new Class({
 		if (!field || !results) { return; }
 		this.setOptions(options);
 		this.bound = {
-			addMouseEvents: this.addMouseEvents.pass([true],this),
+			addMouseEvents: this.addRemoveMouseEvents.pass([true],this),
 			blur: this.blur.bind(this),
 			filter: this.filter.bind(this),
 			focus: this.focus.bind(this),
