@@ -81,7 +81,7 @@ Form.Check = new Class({
 	},
 	toggle: function(e) {
 		var evt;
-		if (this.disabled) { return; }
+		if (this.disabled) { return this; }
 		if (e) { evt = new Event(e).stop(); }
 		if (this.checked) {
 			this.uncheck();
@@ -89,6 +89,7 @@ Form.Check = new Class({
 			this.check();
 		}
 		this.fireEvent('onChange',this);
+		return this;
 	},
 	uncheck: function() {
 		this.element.removeClass(this.config.checkedClass);
