@@ -28,27 +28,15 @@ Form.CheckGroup = new Class({
 		this.checks.push(check);
 	},
 	checkAll: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			if (!check.checked) { check.toggle(); }
-		});
+		this.checks.each(function(check) { if (!check.checked) { check.toggle(); } });
 	},
 	disable: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			check.disable();
-		});
+		this.checks.each(function(check) { check.disable(); });
 	},
 	enable: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			check.enable();
-		});
+		this.checks.each(function(check) { check.enable(); });
 	},
 	uncheckAll: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			if (check.checked) { check.toggle(); }
-		});
+		this.checks.each(function(check) { if (check.checked) { check.toggle(); } });
 	}
 });

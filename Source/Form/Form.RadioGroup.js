@@ -32,16 +32,10 @@ Form.RadioGroup = new Class({
 		this.radios.push(check);
 	},
 	disable: function() {
-		var radios = this.radios;
-		radios.each(function(radio) {
-			radio.disable();
-		});
+		this.radios.each(function(radio) { radio.disable(); });
 	},
 	enable: function() {
-		var radios = this.radios;
-		radios.each(function(radio) {
-			radio.enable();
-		});
+		this.radios.each(function(radio) { radio.enable(); });
 	},
 	select: function(checkedRadio) {
 		var radios = this.radios;
