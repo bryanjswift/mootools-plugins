@@ -27,9 +27,13 @@ Form.RadioGroup = new Class({
 		radioOptions.disabled = radio.get('disabled');
 		var check = radio.retrieve('Form.Radio::data') || new Form.Radio(radio,$extend(radioOptions,this.options.radioOptions));
 		check.addEvent('onCheck',this.bound.select);
-		if (check.checked) { this.value = check.value; }
+		if (check.checked) { this.changed(check); }
 		radio.store('Form.RadioGroup::data',this);
 		this.radios.push(check);
+	},
+	changed: function(radio) {
+		this.value = radio.value;
+		this.fireEvent('onChange',this);
 	},
 	disable: function() {
 		this.radios.each(function(radio) { radio.disable(); });
@@ -42,9 +46,6 @@ Form.RadioGroup = new Class({
 		radios.each(function(radio) {
 			if (radio.checked && radio.value != checkedRadio.value) { radio.uncheck(); }
 		});
-		if (checkedRadio.value !== this.value) {
-			this.value = checkedRadio.value;
-			this.fireEvent('onChange',this);
-		}
+		if (checkedRadio.value !== this.value) { this.changed(checkedRadio); }
 	}
 });
