@@ -20,14 +20,14 @@ Form.RadioGroup = new Class({
 		var radios = group.getElements('input[type=radio]');
 		radios.each(this.addCheck,this);
 	},
-	addCheck: function(radio) {
+	addCheck: function(radio,i) {
 		var initialValues = this.options.initialValues[radio.get('name')];
 		var radioOptions = {};
 		radioOptions.checked = initialValues ? initialValues.contains(radio.get('value')) : radio.get('checked');
 		radioOptions.disabled = radio.get('disabled');
 		var check = radio.retrieve('Form.Radio::data') || new Form.Radio(radio,$extend(radioOptions,this.options.radioOptions));
 		check.addEvent('onCheck',this.bound.select);
-		if (check.checked) { this.changed(check); }
+		if (check.checked) { i ? this.changed(check) : this.value = check.value; }
 		radio.store('Form.RadioGroup::data',this);
 		this.radios.push(check);
 	},
