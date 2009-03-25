@@ -151,6 +151,7 @@ Form.Searcher.Match = new Class({
 		this.setOptions(options);
 		this.data = data;
 		this.element = new Element('li',{
+			events: { click: this.select.bind(this) },
 			html: data.name
 		});
 		this.element.store('Form.Searcher::match',this);
