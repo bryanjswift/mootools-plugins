@@ -32,9 +32,11 @@ Form.CheckGroup = new Class({
 	},
 	disable: function() {
 		this.checks.each(function(check) { check.disable(); });
+		this.fireEvent('disable',this);
 	},
 	enable: function() {
 		this.checks.each(function(check) { check.enable(); });
+		this.fireEvent('enable',this);
 	},
 	uncheckAll: function() {
 		this.checks.each(function(check) { if (check.checked) { check.toggle(); } });
