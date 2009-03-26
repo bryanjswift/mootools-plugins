@@ -48,7 +48,7 @@ Pagination = new Class({
 		this.page = pageNumber;
 		var pageSize = this.options.pageSize;
 		var slice = this.keys.slice(pageSize * (pageNumber - 1),pageNumber * pageSize);
-		this.fireEvent('onPage',[slice,this]);
+		this.fireEvent('page',[slice,this]);
 		return slice;
 	},
 	getPreviousPage: function() {
@@ -86,6 +86,7 @@ Pagination = new Class({
 		else { this.initializeObject(data); }
 		this.numberPages = Math.ceil(this.keys.length / this.options.pageSize);
 		this.page = 0;
+		if (this.numberPages === 0) { return this.fireEvent('empty',this); }
 		this.getFirstPage();
 	},
 	updateOptions: function(options) {
