@@ -8,6 +8,7 @@ Form.Slider = new Class({
 		duration: 500,
 		scrollbar: false,
 		showButtons: true,
+		size: null,
 		snapSize: false,
 		vertical: true
 	},
@@ -35,7 +36,7 @@ Form.Slider = new Class({
 		var dimension = vertical ? 'height' : 'width';
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
-		var size = element.getStyle(dimension).toInt();
+		var size = this.options.size || element.getStyle(dimension).toInt();
 		var elementSize = this.getElementSize(element,xy);
 		if (elementSize <= size) { return; }
 		this.bound = {
