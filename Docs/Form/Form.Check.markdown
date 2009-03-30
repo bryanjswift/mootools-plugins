@@ -3,6 +3,10 @@ Class: Form.Check {#Form-Check}
 
 Class to represent a checkbox
 
+### Implements:
+
+Events, Options
+
 
 
 Form.Check Method: constructor {#Form-Check:constructor}
@@ -50,10 +54,6 @@ Can only be changed by altering source or subclassing.
 ### Examples:
 
 	var check = new Form.Check(document.getElement('input[type=checkbox]'));
-
-### Notes:
-
-- Form.Check is stored on element as 'Form.Check::data' and can be retrieved with that key
 
 
 
