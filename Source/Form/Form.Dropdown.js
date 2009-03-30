@@ -95,7 +95,6 @@ Form.Dropdown = new Class({
 		this.input = input;
 		return options;
 	},
-	blur: function(e) { },
 	collapse: function(e) {
 		this.open = false;
 		this.element.removeClass('active').removeClass('dropdown-active');
