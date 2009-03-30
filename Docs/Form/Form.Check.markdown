@@ -14,8 +14,8 @@ Form.Check Method: constructor {#Form-Check:constructor}
 
 ### Arguments:
 
-1. element - (*mixed*) The id of a DOM element, a DOM element, or an [Element][]
-1. options - (*object*, optional) the configuration options for the styled check element
+1. element						- (*mixed*) The id of a DOM element, a DOM element, or an [Element][]
+1. options						- (*object*, optional) the configuration options for the styled check element
 
 ### Options:
 
@@ -24,14 +24,14 @@ Form.Check Method: constructor {#Form-Check:constructor}
 
 ### Events:
 
-* onCreate						- (*function*) Fired just before initialize finishes
-* onDisable						- (*function*) Fired when the check element is disabled
-* onEnable						- (*function*) Fired when the check element is enabled
-* onHighlight					- (*function*) Fired when the check element is mouse over
-* onRemoveHighlight		- (*function*) Fired when the a mouse out event occurs on the check elemet
-* onCheck							- (*function*) Fired when the input becomes checked
-* onUncheck						- (*function*) Fired when the input becomes unchecked
-* onChange						- (*function*) Fired when the input element changes from checked to unchecked
+* change							- (*function*) Fired when the input element changes from checked to unchecked via toggle
+* check								- (*function*) Fired when the input becomes checked
+* create							- (*function*) Fired just before initialize finishes
+* disable							- (*function*) Fired when the check element is disabled
+* enable							- (*function*) Fired when the check element is enabled
+* highlight						- (*function*) Fired when the check element is mouse over
+* removeHighlight			- (*function*) Fired when the a mouse out event occurs on the check element
+* uncheck							- (*function*) Fired when the input becomes unchecked
 
 ### Returns:
 
@@ -44,6 +44,18 @@ Form.Check Method: constructor {#Form-Check:constructor}
 ### Notes:
 
 - Form.Check is stored on element as 'Form.Check::data' and can be retrieved with that key
+
+
+
+Form.Check Method: check {#Form-Check:check}
+------------------------
+
+Sets the checkbox to it's checked state
+
+### Syntax
+
+	check.check();
+
 
 
 Form.Check Method: disable {#Form-Check:disable}
@@ -93,13 +105,28 @@ Takes the checkbox out of it's highlighted state
 Form.Check Method: toggle {#Form-Check:toggle}
 -------------------------
 
-Toggles the checked state of the checkbox
+Toggles the checked state of the checkbox by calling [check](#Form-Check:check) or [uncheck](#Form-Check:uncheck) as appropriate. Does nothing if disabled
 
 ### Syntax:
 
 	check.toggle();
 
+### Returns:
+
+The Form.Check instance
+
+
+
+Form.Check Method: uncheck {#Form-Check:uncheck}
+--------------------------
+
+Sets the checkbox to it's unchecked state
+
+### Syntax
+
+	check.uncheck();
+
 
 
 [Element]: http://mootools.net/docs/Element/Element
-[Form.Check]: #Form.Check
+[Form.Check]: #Form-Check

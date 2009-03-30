@@ -51,33 +51,33 @@ Form.Check = new Class({
 			blur: bound.removeHighlight,
 			focus: bound.highlight
 		});
-		this.fireEvent('onCreate',this);
+		this.fireEvent('create',this);
 	},
 	check: function() {
 		this.element.addClass(this.config.checkedClass);
 		this.input.set('checked','checked').focus();
 		this.checked = true;
-		this.fireEvent('onCheck',this);
+		this.fireEvent('check',this);
 	},
 	disable: function() {
 		this.element.addClass(this.config.disabledClass);
 		this.input.set('disabled','disabled');
 		this.disabled = true;
-		this.fireEvent('onDisable',this);
+		this.fireEvent('disable',this);
 	},
 	enable: function() {
 		this.element.removeClass(this.config.disabledClass);
 		this.input.erase('disabled');
 		this.disabled = false;
-		this.fireEvent('onEnable',this);
+		this.fireEvent('enable',this);
 	},
 	highlight: function() {
 		this.element.addClass(this.config.highlightedClass);
-		this.fireEvent('onHighlight',this);
+		this.fireEvent('highlight',this);
 	},
 	removeHighlight: function() {
 		this.element.removeClass(this.config.highlightedClass);
-		this.fireEvent('onRemoveHighlight',this);
+		this.fireEvent('removeHighlight',this);
 	},
 	toggle: function(e) {
 		var evt;
@@ -88,13 +88,13 @@ Form.Check = new Class({
 		} else {
 			this.check();
 		}
-		this.fireEvent('onChange',this);
+		this.fireEvent('change',this);
 		return this;
 	},
 	uncheck: function() {
 		this.element.removeClass(this.config.checkedClass);
 		this.input.erase('checked');
 		this.checked = false;
-		this.fireEvent('onUncheck',this);
+		this.fireEvent('uncheck',this);
 	}
 });
