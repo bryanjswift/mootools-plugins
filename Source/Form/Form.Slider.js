@@ -8,6 +8,7 @@ Form.Slider = new Class({
 		duration: 500,
 		scrollbar: false,
 		showButtons: true,
+		size: null,
 		snapSize: false,
 		vertical: true
 	},
@@ -16,6 +17,7 @@ Form.Slider = new Class({
 	dimension: null,
 	dragProperties: {on:false,downPosition:null},
 	element: null,
+	elementSize: null,
 	pageSize: null,
 	position: 0,
 	scrollbar: null,
@@ -34,8 +36,9 @@ Form.Slider = new Class({
 		var dimension = vertical ? 'height' : 'width';
 		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
-		var size = element.getStyle(dimension).toInt();
-		if (element.getScrollSize()[xy] <= size) { return; }
+		var size = this.options.size || element.getStyle(dimension).toInt();
+		var elementSize = this.getElementSize(element,xy);
+		if (elementSize <= size) { return; }
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
 			buttonUp: this.clearButtonHoldInterval.bind(this),
@@ -54,7 +57,7 @@ Form.Slider = new Class({
 		var trackSize = scrollbar.getSize()[xy] - backSize - forwardSize;
 		var trackStyles = vertical ? {height:trackSize,position:'absolute','top':backSize} : {width:trackSize,position:'absolute','left':backSize};
 		this.track = scrollbar.getElement('div.scrollbarTrack').setStyles(trackStyles);
-		this.ratio = wrapper.getSize()[xy] / element.getScrollSize()[xy];
+		this.ratio = wrapper.getSize()[xy] / elementSize;
 		var scrubber = scrollbar.getElement('div.scrollbarScrubber');
 		var scrubberSize = Math.floor(this.ratio * trackSize);
 		sides.each(function(side) {
@@ -65,13 +68,15 @@ Form.Slider = new Class({
 		this.dimension = positionDimension;
 		this.element = element;
 		this.limit = trackSize - scrubber.getSize()[xy];
-		this.pageSize = size;
+		this.pageSize = size * this.ratio;
 		this.scrubber = scrubber;
 		this.trackSize = trackSize;
 		this.wrapper = wrapper;
 		this.xy = xy;
 		// store data
 		element.store('Form.Slider::data',this);
+		// fire an event for post processing
+		this.fireEvent('onCreate',this);
 	},
 	initializeScrollbar: function() {
 		var scrollbar = this.options.scrollbar || new Element('div',{'class':'scrollbar'});
@@ -134,12 +139,10 @@ Form.Slider = new Class({
 		wrapperStyles[dimension] = size;
 		var wrapper = new Element('div',{
 			'class':'scrollbarWrapper',
-			events: {
-				mouseenter: document.addEvent.pass(['mousewheel',this.bound.mousewheel],document),
-				mouseleave: document.removeEvent.pass(['mousewheel',this.bound.mousewheel],document)
-			},
 			styles: wrapperStyles
 		});
+		wrapper.addEvents({mouseenter:wrapper.addClass.pass(['hovered'],wrapper), mouseleave:wrapper.removeClass.pass(['hovered'],wrapper)});
+		document.addEvent('mousewheel',this.bound.mousewheel);
 		this.wrapper = wrapper;
 		element.setStyles(elementStyles);
 		wrapper.wraps(element);
@@ -157,14 +160,16 @@ Form.Slider = new Class({
 		$clear(this.buttonHoldInterval);
 	},
 	destroy: function() {
+		document.removeEvent('mousewheel',this.bound.mousewheel);
+		if (!this.options.wrapper) {
+			this.wrapper.getParent().adopt(this.wrapper.getChildren());
+			this.wrapper.destroy();
+		}
+		if (!this.options.scrollbar) { this.scrollbar.destroy(); }
 		this.element = null;
-		this.scrollbar.destroy();
 		this.scrollbar = null;
 		this.scrubber = null;
-		this.wrapper.getParent().adopt(this.wrapper.getChildren());
-		this.wrapper.destroy();
 		this.wrapper = null;
-		document.removeEvent('mousewheel',this.bound.mousewheel);
 	},
 	drag: function(e) {
 		var evt = new Event(e);
@@ -174,43 +179,50 @@ Form.Slider = new Class({
 	getCreateElement: function(scrollbar,clazz) {
 		return this.options.scrollbar ? scrollbar.getElement('.' + clazz).removeEvents() : new Element('div',{'class':clazz});
 	},
+	getElementSize: function(element,xy) {
+		if (Browser.Engine.trident) { return element.getScrollSize()[xy]; }
+		var elementSize = 0;
+		element.getChildren().each(function(child) { elementSize = elementSize + child.getSize()[xy]; });
+		return elementSize;
+	},
 	moveContent: function(ratio,animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
 		// fireEvent appears to not pass args which evaluate to false
 		if (typeof ratio !== 'number' || !ratio) { ratio = 0; }
 		var list = this.element;
-		var position = -ratio * list.getScrollSize()[this.xy];
+		var position = -ratio * list.getSize()[this.xy];
 		list.get('tween')[animate ? 'start' : 'set'](this.dimension,position);
 	},
-	pageBackward: function(e) {
+	pageBackward: function(e,fromDelay) {
 		var evt = e ? new Event(e).stop() : null;
-		this.setScrubberPosition(this.position - (this.track.getSize()[this.xy] * 0.25));
-		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageBackward.delay(150,this,[e]); }
+		this.setScrubberPosition(this.position - (this.pageSize * 0.25));
+		if (evt && evt.type === 'mousedown' || fromDelay) { this.buttonHoldInterval = this.pageBackward.delay(150,this,[null,true]); }
 	},
-	pageForward: function(e) {
+	pageForward: function(e,fromDelay) {
 		var evt = e ? new Event(e).stop() : null;
-		this.setScrubberPosition(this.position + (this.track.getSize()[this.xy] * 0.25));
-		if (evt && evt.type === 'mousedown') { this.buttonHoldInterval = this.pageForward.delay(150,this,[e]); }
+		this.setScrubberPosition(this.position + (this.pageSize * 0.25));
+		if (evt && evt.type === 'mousedown' || fromDelay) { this.buttonHoldInterval = this.pageForward.delay(150,this,[null,true]); }
 	},
 	recalibrate: function() {
 		this.fireEvent('onRecalibrateStart',this);
 		var xy = this.xy;
 		var trackSize = this.trackSize;
-		this.ratio = this.wrapper.getSize()[xy] / this.element.getScrollSize()[xy];
+		var vertical = this.options.vertical;
+		this.element.addClass('recalibrating').setStyle(vertical ? 'height' : 'width','auto');
+		this.ratio = this.wrapper.getSize()[xy] / this.getElementSize(this.element,xy);
 		var scrubber = this.scrubber;
 		var scrubberSize = Math.floor(this.ratio * trackSize);
-		(this.options.vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
+		(vertical ? ['Top','Bottom'] : ['Left','Right']).each(function(side) {
 			scrubberSize = scrubberSize - scrubber.getStyle('margin' + side).toInt() - scrubber.getStyle('padding' + side).toInt() - scrubber.getStyle('border' + side + 'Width').toInt();
 		});
-		var tween = new Fx.Tween(scrubber,{
-			onComplete:function() {
-				this.limit = trackSize - scrubber.getSize()[xy];
-				this.fireEvent('onRecalibrateFinish',this);
-			}.bind(this)
-		});
-		tween.start(this.options.vertical ? 'height' : 'width',scrubberSize);
+		scrubber.setStyle(vertical ? 'height' : 'width',scrubberSize);
+		this.limit = trackSize - scrubber.getSize()[xy];
+		if (this.position > this.limit) { this.setScrubberPosition(this.limit,false); }
+		this.element.removeClass('recalibrating');
+		this.fireEvent('onRecalibrateFinish',this);
 	},
 	scroll: function(e) {
+		if (!this.wrapper.hasClass('hovered')) { return; }
 		var evt = new Event(e);
 		if (evt.wheel > 0 && this.position != 0) {
 			// wheel up
