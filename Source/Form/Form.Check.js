@@ -12,12 +12,15 @@ Form.Check = new Class({
 	config: {
 		checkedClass: 'checked',
 		disabledClass: 'disabled',
-		highlightedClass: 'highlighted'
+		elementClass: 'check',
+		highlightedClass: 'highlighted',
+		storage: 'Form.Check::data'
 	},
 	disabled: false,
 	element: null,
 	input: null,
 	label: null,
+	value: null,
 	initialize: function(input,options) {
 		this.setOptions(options);
 		this.bound = {
@@ -29,10 +32,11 @@ Form.Check = new Class({
 		};
 		var bound = this.bound;
 		input = this.input = $(input);
-		this.label = document.getElement('label[for=' + input.get('id'));
+		var id = input.get('id');
+		this.label = document.getElement('label[for=' + id);
 		this.element = new Element('div',{
-			'class': input.get('class') + ' check',
-			id: input.get('id') + 'Check',
+			'class': input.get('class') + ' ' + this.config.elementClass,
+			id: id ? id + 'Check' : '',
 			events: {
 				click: bound.toggle,
 				mouseenter: bound.highlight,
@@ -40,13 +44,20 @@ Form.Check = new Class({
 			}
 		});
 		this.element.wraps(input);
-		if (this.options.checked || input.get('checked')) { this.toggle(); }
-		if (this.options.disabled || input.get('disabled')) { this.disable(); }
-		input.store('Form.Check::data',this).addEvents({
+		this.value = input.get('value');
+		if (this.options.checked) { this.check(); } else { this.uncheck(); }
+		if (this.options.disabled) { this.disable(); } else { this.enable(); }
+		input.store(this.config.storage,this).addEvents({
 			blur: bound.removeHighlight,
 			focus: bound.highlight
 		});
 		this.fireEvent('onCreate',this);
+	},
+	check: function() {
+		this.element.addClass(this.config.checkedClass);
+		this.input.set('checked','checked').focus();
+		this.checked = true;
+		this.fireEvent('onCheck',this);
 	},
 	disable: function() {
 		this.element.addClass(this.config.disabledClass);
@@ -70,18 +81,20 @@ Form.Check = new Class({
 	},
 	toggle: function(e) {
 		var evt;
-		if (this.disabled) { return; }
+		if (this.disabled) { return this; }
 		if (e) { evt = new Event(e).stop(); }
 		if (this.checked) {
-			this.element.removeClass(this.config.checkedClass);
-			this.input.erase('checked');
-			this.checked = false;
+			this.uncheck();
 		} else {
-			this.element.addClass(this.config.checkedClass);
-			this.input.set('checked','checked').focus();
-			this.checked = true;
+			this.check();
 		}
-		this.fireEvent(this.checked ? 'onCheck' : 'onUncheck',this);
 		this.fireEvent('onChange',this);
+		return this;
+	},
+	uncheck: function() {
+		this.element.removeClass(this.config.checkedClass);
+		this.input.erase('checked');
+		this.checked = false;
+		this.fireEvent('onUncheck',this);
 	}
 });

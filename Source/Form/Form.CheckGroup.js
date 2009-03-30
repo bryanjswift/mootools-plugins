@@ -4,7 +4,8 @@ if (typeof Form === 'undefined') { Form = {}; }
 Form.CheckGroup = new Class({
 	Implements: [Events,Options],
 	options: {
-		checkOptions: {}
+		checkOptions: {},
+		initialValues: {}
 	},
 	checks: [],
 	initialize: function(group,options) {
@@ -15,39 +16,29 @@ Form.CheckGroup = new Class({
 		var checks = this.checks;
 		var checkOptions = this.options.checkOptions;
 		var checkboxes = group.getElements('input[type=checkbox]');
-		checkboxes.each(function(checkbox) {
-			var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,checkOptions);
-			checks.push(check);
-			checkbox.store('Form.CheckGroup::data',this);
-		},this);
+		checkboxes.each(this.addCheck,this);
 	},
 	addCheck: function(checkbox) {
-		var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,this.options.checkOptions);
+		var initialValues = this.options.initialValues[checkbox.get('name')];
+		var checkOptions = {};
+		checkOptions.checked = initialValues ? initialValues.contains(checkbox.get('value')) : checkbox.get('checked');
+		checkOptions.disabled = checkbox.get('disabled');
 		checkbox.store('Form.CheckGroup::data',this);
+		var check = checkbox.retrieve('Form.Check::data') || new Form.Check(checkbox,$extend(checkOptions,this.options.checkOptions));
 		this.checks.push(check);
 	},
 	checkAll: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			if (!check.checked) { check.toggle(); }
-		});
+		this.checks.each(function(check) { if (!check.checked) { check.toggle(); } });
 	},
 	disable: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			check.disable();
-		});
+		this.checks.each(function(check) { check.disable(); });
+		this.fireEvent('disable',this);
 	},
 	enable: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			check.enable();
-		});
+		this.checks.each(function(check) { check.enable(); });
+		this.fireEvent('enable',this);
 	},
 	uncheckAll: function() {
-		var checks = this.checks;
-		checks.each(function(check) {
-			if (check.checked) { check.toggle(); }
-		});
+		this.checks.each(function(check) { if (check.checked) { check.toggle(); } });
 	}
 });
