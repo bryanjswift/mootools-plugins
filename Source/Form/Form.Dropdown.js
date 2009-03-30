@@ -102,9 +102,7 @@ Form.Dropdown = new Class({
 		this.element.removeEvents(this.events);
 		this.fireEvent('collapse',[this,e]);
 	},
-	deselect: function(option) {
-		option.deselect();
-	},
+	deselect: function(option) { option.deselect(); },
 	destroy: function() {
 		this.element = null;
 		this.selection = null;

@@ -58,15 +58,15 @@ Create the elements which wrap or replace the select element. For internal use.
 Form.Dropdown Method: collapse {#Form.Dropdown:collapse}
 ------------------------------
 
-
+Method to close the list of options
 
 ### Syntax:
 
-
+	dropdown.collapse();
 
 ### Arguments:
 
-1. e - (**)
+1. e - (*event*) event triggering the collapse call
 
 
 Form.Dropdown Method: deselect {#Form.Dropdown:deselect}
