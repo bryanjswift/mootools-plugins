@@ -101,7 +101,7 @@ Form.Dropdown = new Class({
 		this.element.removeClass('active').removeClass('dropdown-active');
 		this.selected.removeHighlight();
 		this.element.removeEvents(this.events);
-		this.fireEvent('onCollapse',[this,e]);
+		this.fireEvent('collapse',[this,e]);
 	},
 	deselect: function(option) {
 		option.deselect();
@@ -115,12 +115,12 @@ Form.Dropdown = new Class({
 		this.collapse();
 		this.input.set('disabled','disabled').removeEvents({blur:this.bound.blur,focus:this.bound.focus});
 		this.selection.getParent().removeEvent('click',this.bound.toggle);
-		this.fireEvent('onDisable',this);
+		this.fireEvent('disable',this);
 	},
 	enable: function() {
 		this.input.erase('disabled').addEvents({blur:this.bound.blur,focus:this.bound.focus});
 		this.selection.getParent().addEvent('click',this.bound.toggle);
-		this.fireEvent('onEnable',this);
+		this.fireEvent('enable',this);
 	},
 	expand: function(e) {
 		$clear(this.collapseInterval);
@@ -130,7 +130,7 @@ Form.Dropdown = new Class({
 		this.element.addClass('active').addClass('dropdown-active');
 		this.selected.highlight();
 		this.element.addEvents(this.events);
-		this.fireEvent('onExpand',[this,e]);
+		this.fireEvent('expand',[this,e]);
 	},
 	focus: function(e) { this.expand(); },
 	foundMatch: function(e) {
@@ -283,8 +283,8 @@ Form.Dropdown = new Class({
 		this.value = option.value;
 		this.input.set('value',option.value);
 		this.selected = option;
-		this.fireEvent('onSelect',[option,e]);
-		if (oldValue !== this.value) { this.fireEvent('onChange',[this,e]); }
+		this.fireEvent('select',[option,e]);
+		if (oldValue !== this.value) { this.fireEvent('change',[this,e]); }
 		this.collapse(e);
 	},
 	toggle: function(e) {
