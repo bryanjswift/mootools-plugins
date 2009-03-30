@@ -132,124 +132,124 @@ var MooBuilder = function(coreBasePath,moreBasePath) {
 MooBuilder.prototype.CoreMeta = {
 	"Core": {
 		"Core": {
-			"deps": ["Core"],
-			"test": function() { return typeof MooTools !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof MooTools !== "undefined"; }
 		},
 		"Browser": {
-			"deps": ["Core"],
-			"test": function() { return typeof Browser !== "undefined" && typeof Browser.Engine !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof Browser !== "undefined" && typeof Browser.Engine !== "undefined"; }
 		}
 	},
 	"Native": {
 		"Array": {
-			"deps": ["Core"],
-			"test": function() { return typeof Array.associate !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof Array.associate !== "undefined"; }
 		},
 		"Function": {
-			"deps": ["Core"],
-			"test": function() { return typeof Function.run !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof Function.run !== "undefined"; }
 		},
 		"Number": {
-			"deps": ["Core"],
-			"test": function() { return typeof Number.limit !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof Number.limit !== "undefined"; }
 		},
 		"String": {
-			"deps": ["Core"],
-			"test": function() { return typeof String.camelCase !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof String.camelCase !== "undefined"; }
 		},
 		"Hash": {
-			"deps": ["Core"],
-			"test": function() { return typeof Hash !== "undefined"; }
+			deps: ["Core"],
+			test: function() { return typeof Hash !== "undefined"; }
 		},
 		"Event": {
-			"deps": ["Browser", "Array", "Function", "Number", "String", "Hash"],
-			"test": function() { return !!Event && typeof Event.Keys !== "undefined"; }
+			deps: ["Browser", "Array", "Function", "Number", "String", "Hash"],
+			test: function() { return !!Event && typeof Event.Keys !== "undefined"; }
 		}
 	},
 	"Class": {
 		"Class": {
-			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"],
-			"test": function() { return typeof Class !== "undefined"; }
+			deps: ["Core", "Array", "String", "Function", "Number", "Hash"],
+			test: function() { return typeof Class !== "undefined"; }
 		},
 		"Class.Extras": {
-			"deps": ["Class"],
-			"test": function() { return typeof Chain !== "undefined"; }
+			deps: ["Class"],
+			test: function() { return typeof Chain !== "undefined"; }
 		}
 	},
 	"Element": {
 		"Element": {
-			"deps": ["Browser", "Array", "String", "Function", "Number", "Hash"],
-			"test": function() { return typeof Element !== "undefined" && typeof Elements !== "undefined"; }
+			deps: ["Browser", "Array", "String", "Function", "Number", "Hash"],
+			test: function() { return typeof Element !== "undefined" && typeof Elements !== "undefined"; }
 		},
 		"Element.Event": {
-			"deps": ["Element", "Event"],
-			"test": function() { return typeof Element.NativeEvents !== "undefined"; }
+			deps: ["Element", "Event"],
+			test: function() { return typeof Element.NativeEvents !== "undefined"; }
 		},
 		"Element.Style": {
-			"deps": ["Element"],
-			"test": function() { return typeof Element.Styles !== "undefined"; }
+			deps: ["Element"],
+			test: function() { return typeof Element.Styles !== "undefined"; }
 		},
 		"Element.Dimensions": {
-			"deps": ["Element"],
-			"test": function() { return typeof getCoordinates !== "undefined"; }
+			deps: ["Element"],
+			test: function() { return typeof getCoordinates !== "undefined"; }
 		}
 	},
 	"Utilities": {
 		"Selectors": {
-			"deps": ["Element"],
-			"test": function() { return typeof Selectors !== "undefined" && typeof Selectors.RegExps !== "undefined"; }
+			deps: ["Element"],
+			test: function() { return typeof Selectors !== "undefined" && typeof Selectors.RegExps !== "undefined"; }
 		},
 		"DomReady": {
-			"deps": ["Element.Event"],
-			"test": function() { return typeof Element !== "undefined" && typeof Element.Events !== "undefined" && typeof Element.Events.domready !== "undefined"; }
+			deps: ["Element.Event"],
+			test: function() { return typeof Element !== "undefined" && typeof Element.Events !== "undefined" && typeof Element.Events.domready !== "undefined"; }
 		},
 		"JSON": {
-			"deps": ["Array", "String", "Function", "Number", "Hash"],
-			"test": function() { return typeof JSON !== "undefined"; }
+			deps: ["Array", "String", "Function", "Number", "Hash"],
+			test: function() { return typeof JSON !== "undefined"; }
 		},
 		"Cookie": {
-			"deps": ["Browser", "Class.Extras"],
-			"test": function() { return typeof Cookie !== "undefined"; }
+			deps: ["Browser", "Class.Extras"],
+			test: function() { return typeof Cookie !== "undefined"; }
 		},
 		"Swiff": {
-			"deps": ["Element.Event"],
-			"test": function() { return typeof Swiff !== "undefined"; }
+			deps: ["Element.Event"],
+			test: function() { return typeof Swiff !== "undefined"; }
 		}
 	},
 	"Fx": {
 		"Fx": {
-			"deps": ["Class.Extras"],
-			"test": function() { return typeof Fx !== "undefined"; }
+			deps: ["Class.Extras"],
+			test: function() { return typeof Fx !== "undefined"; }
 		},
 		"Fx.CSS": {
-			"deps": ["Fx", "Element.Style"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.CSS !== "undefined"; }
+			deps: ["Fx", "Element.Style"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.CSS !== "undefined"; }
 		},
 		"Fx.Tween": {
-			"deps": ["Fx.CSS"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Tween !== "undefined"; }
+			deps: ["Fx.CSS"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.Tween !== "undefined"; }
 		},
 		"Fx.Morph": {
-			"deps": ["Fx.CSS"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Morph !== "undefined"; }
+			deps: ["Fx.CSS"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.Morph !== "undefined"; }
 		},
 		"Fx.Transitions": {
-			"deps": ["Fx"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Transitions !== "undefined"; }
+			deps: ["Fx"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.Transitions !== "undefined"; }
 		}
 	},
 	"Request": {
 		"Request": {
-			"deps": ["Class.Extras"],
-			"test": function() { return typeof Request !== "undefined"; }
+			deps: ["Class.Extras"],
+			test: function() { return typeof Request !== "undefined"; }
 		},
 		"Request.HTML": {
-			"deps": ["Request"],
-			"test": function() { return typeof Request !== "undefined" && typeof Request.HTML !== "undefined"; }
+			deps: ["Request"],
+			test: function() { return typeof Request !== "undefined" && typeof Request.HTML !== "undefined"; }
 		},
 		"Request.JSON": {
-			"deps": ["Request", "JSON"],
-			"test": function() { return typeof Request !== "undefined" && typeof Request.JSON !== "undefined"; }
+			deps: ["Request", "JSON"],
+			test: function() { return typeof Request !== "undefined" && typeof Request.JSON !== "undefined"; }
 		}
 	}
 };
@@ -257,70 +257,70 @@ MooBuilder.prototype.CoreMeta = {
 MooBuilder.prototype.MoreMeta = {
 	"Fx": {
 		"Fx.Slide": {
-			"deps": ["Fx", "Element.Style"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Slide !== "undefined"; }
+			deps: ["Fx", "Element.Style"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.Slide !== "undefined"; }
 		},
 		"Fx.Scroll": {
-			"deps": ["Fx", "Element.Event", "Element.Dimensions"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Scroll !== "undefined"; }
+			deps: ["Fx", "Element.Event", "Element.Dimensions"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.Scroll !== "undefined"; }
 		},
 		"Fx.Elements": {
-			"deps": ["Fx.CSS"],
-			"test": function() { return typeof Fx !== "undefined" && typeof Fx.Elements !== "undefined"; }
+			deps: ["Fx.CSS"],
+			test: function() { return typeof Fx !== "undefined" && typeof Fx.Elements !== "undefined"; }
 		}
 	},
 	"Drag": {
 		"Drag": {
-			"deps": ["Class.Extras", "Element.Event", "Element.Style"],
-			"test": function() { return typeof Drag !== "undefined"; }
+			deps: ["Class.Extras", "Element.Event", "Element.Style"],
+			test: function() { return typeof Drag !== "undefined"; }
 		},
 		"Drag.Move": {
-			"deps": ["Drag", "Element.Dimensions"],
-			"test": function() { return typeof Drag !== "undefined" && typeof Drag.Move !== "undefined"; }
+			deps: ["Drag", "Element.Dimensions"],
+			test: function() { return typeof Drag !== "undefined" && typeof Drag.Move !== "undefined"; }
 		}
 	},
 	"Utilities": {
 		"Hash.Cookie": {
-			"deps": ["Cookie"],
-			"test": function() { return typeof Hash !== "undefined" && typeof Hash.Cookie !== "undefined"; }
+			deps: ["Cookie"],
+			test: function() { return typeof Hash !== "undefined" && typeof Hash.Cookie !== "undefined"; }
 		},
 		"Color": {
-			"deps": ["Core", "Array", "String", "Function", "Number", "Hash"],
-			"test": function() { return typeof Color !== "undefined"; }
+			deps: ["Core", "Array", "String", "Function", "Number", "Hash"],
+			test: function() { return typeof Color !== "undefined"; }
 		},
 		"Group": {
-			"deps": ["Class"],
-			"test": function() { return typeof Group !== "undefined"; }
+			deps: ["Class"],
+			test: function() { return typeof Group !== "undefined"; }
 		},
 		"Assets": {
-			"deps": ["Hash"],
-			"test": function() { return typeof Asset !== "undefined"; }
+			deps: ["Hash"],
+			test: function() { return typeof Asset !== "undefined"; }
 		}
 	},
 	"Interface": {
 		"Sortables": {
-			"deps": ["Drag.Move"],
-			"test": function() { return typeof Sortables !== "undefined"; }
+			deps: ["Drag.Move"],
+			test: function() { return typeof Sortables !== "undefined"; }
 		},
 		"Tips": {
-			"deps": ["Class.Extras"],
-			"test": function() { return typeof Tips !== "undefined"; }
+			deps: ["Class.Extras"],
+			test: function() { return typeof Tips !== "undefined"; }
 		},
 		"SmoothScroll": {
-			"deps": ["Fx.Scroll"],
-			"test": function() { return typeof SmoothScroll !== "undefined"; }
+			deps: ["Fx.Scroll"],
+			test: function() { return typeof SmoothScroll !== "undefined"; }
 		},
 		"Slider": {
-			"deps": ["Drag"],
-			"test": function() { return typeof Slider !== "undefined"; }
+			deps: ["Drag"],
+			test: function() { return typeof Slider !== "undefined"; }
 		},
 		"Scroller": {
-			"deps": ["Class.Extras"],
-			"test": function() { return typeof Scroller !== "undefined"; }
+			deps: ["Class.Extras"],
+			test: function() { return typeof Scroller !== "undefined"; }
 		},
 		"Accordion": {
-			"deps": ["Fx.Elements"],
-			"test": function() { return typeof Accordion !== "undefined"; }
+			deps: ["Fx.Elements"],
+			test: function() { return typeof Accordion !== "undefined"; }
 		}
 	}
 };
