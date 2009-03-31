@@ -1,4 +1,4 @@
-Class: Form.Dropdown {#Form.Dropdown}
+Class: Form.Dropdown {#Form-Dropdown}
 ====================
 
 Class to represent a stylized dropdown or select box
@@ -9,7 +9,7 @@ Events, Options
 
 
 
-Form.Dropdown Method: constructor {#Form.Dropdown:constructor}
+Form.Dropdown Method: constructor {#Form-Dropdown:constructor}
 ---------------------------------
 
 ### Syntax:
@@ -48,14 +48,14 @@ Form.Dropdown Method: constructor {#Form.Dropdown:constructor}
 
 
 
-Form.Dropdown Method: initializeCreateElements {#Form.Dropdown:initializeCreateElements}
+Form.Dropdown Method: initializeCreateElements {#Form-Dropdown:initializeCreateElements}
 ----------------------------------------------
 
 Create the elements which wrap or replace the select element. For internal use.
 
 
 
-Form.Dropdown Method: collapse {#Form.Dropdown:collapse}
+Form.Dropdown Method: collapse {#Form-Dropdown:collapse}
 ------------------------------
 
 Method to close the list of options
@@ -66,76 +66,88 @@ Method to close the list of options
 
 ### Arguments:
 
-1. e - (*event*) event triggering the collapse call
+1. e - (*event*) event, if any, triggering the collapse call
 
 
-Form.Dropdown Method: deselect {#Form.Dropdown:deselect}
----------------------------------------------------------
 
+Form.Dropdown Method: deselect {#Form-Dropdown:deselect}
+------------------------------
+
+Method to deselect an option
 
 ### Syntax:
 
-
+	dropdown.deselect(dropdown.dropdownOptions[0]);
 
 ### Arguments:
 
-1. option - (**)
-
-
-Form.Dropdown Method: destroy {#Form.Dropdown:destroy}
--------------------------------------------------------
-
-
-### Syntax:
+1. option - (*[Form.SelectOption][]*) option to be deselected
 
 
 
+Form.Dropdown Method: destroy {#Form-Dropdown:destroy}
+-----------------------------
 
-Form.Dropdown Method: disable {#Form.Dropdown:disable}
--------------------------------------------------------
-
+Nulls out elements used by the dropdown prior to page unload
 
 ### Syntax:
 
+	dropdown.destroy();
 
 
 
-Form.Dropdown Method: enable {#Form.Dropdown:enable}
------------------------------------------------------
+Form.Dropdown Method: disable {#Form-Dropdown:disable}
+-----------------------------
 
-
-### Syntax:
-
-
-
-
-Form.Dropdown Method: expand {#Form.Dropdown:expand}
------------------------------------------------------
-
+Disables the dropdown by removing events which allow the elements to be operational
 
 ### Syntax:
 
+	dropdown.disable();
 
+
+
+Form.Dropdown Method: enable {#Form-Dropdown:enable}
+----------------------------
+
+Enables the dropdown by adding events removed by the disable method
+
+### Syntax:
+
+	dropdown.enable();
+
+
+
+Form.Dropdown Method: expand {#Form-Dropdown:expand}
+----------------------------
+
+Opens or displays the options list enabling a selection to be made
+
+### Syntax:
+
+	dropdown.expand();
 
 ### Arguments:
 
-1. e - (**)
+1. e - (*event*) event, if any, triggering the expand call
 
 
-Form.Dropdown Method: focus {#Form.Dropdown:focus}
+
+Form.Dropdown Method: focus {#Form-Dropdown:focus}
 ---------------------------------------------------
 
+Bound to the created text input's focus event. Triggers a call to expand
 
 ### Syntax:
 
-
+	dropdown.focus();
 
 ### Arguments:
 
-1. e - (**)
+1. e - (*event*) event, if any, triggering the focus call
 
 
-Form.Dropdown Method: foundMatch {#Form.Dropdown:foundMatch}
+Form.Dropdown Method: foundMatch {#Form-Dropdown:foundMatch}
 -------------------------------------------------------------
 
 
@@ -153,7 +165,7 @@ Form.Dropdown Method: foundMatch {#Form.Dropdown:foundMatch}
 
 
 
-Form.Dropdown Method: highlightOption {#Form.Dropdown:highlightOption}
+Form.Dropdown Method: highlightOption {#Form-Dropdown:highlightOption}
 -----------------------------------------------------------------------
 
 
@@ -166,7 +178,7 @@ Form.Dropdown Method: highlightOption {#Form.Dropdown:highlightOption}
 1. option - (**)
 
 
-Form.Dropdown Method: keydown {#Form.Dropdown:keydown}
+Form.Dropdown Method: keydown {#Form-Dropdown:keydown}
 -------------------------------------------------------
 
 
@@ -184,7 +196,7 @@ Form.Dropdown Method: keydown {#Form.Dropdown:keydown}
 
 
 
-Form.Dropdown Method: keypress {#Form.Dropdown:keypress}
+Form.Dropdown Method: keypress {#Form-Dropdown:keypress}
 ---------------------------------------------------------
 
 
@@ -202,7 +214,7 @@ Form.Dropdown Method: keypress {#Form.Dropdown:keypress}
 
 
 
-Form.Dropdown Method: mouseenterDropdown {#Form.Dropdown:mouseenterDropdown}
+Form.Dropdown Method: mouseenterDropdown {#Form-Dropdown:mouseenterDropdown}
 -----------------------------------------------------------------------------
 
 
@@ -211,7 +223,7 @@ Form.Dropdown Method: mouseenterDropdown {#Form.Dropdown:mouseenterDropdown}
 
 
 
-Form.Dropdown Method: mouseleaveDropdown {#Form.Dropdown:mouseleaveDropdown}
+Form.Dropdown Method: mouseleaveDropdown {#Form-Dropdown:mouseleaveDropdown}
 -----------------------------------------------------------------------------
 
 
@@ -220,7 +232,7 @@ Form.Dropdown Method: mouseleaveDropdown {#Form.Dropdown:mouseleaveDropdown}
 
 
 
-Form.Dropdown Method: mousemove {#Form.Dropdown:mousemove}
+Form.Dropdown Method: mousemove {#Form-Dropdown:mousemove}
 -----------------------------------------------------------
 
 
@@ -229,7 +241,7 @@ Form.Dropdown Method: mousemove {#Form.Dropdown:mousemove}
 
 
 
-Form.Dropdown Method: removeHighlightOption {#Form.Dropdown:removeHighlightOption}
+Form.Dropdown Method: removeHighlightOption {#Form-Dropdown:removeHighlightOption}
 -----------------------------------------------------------------------------------
 
 
@@ -242,7 +254,7 @@ Form.Dropdown Method: removeHighlightOption {#Form.Dropdown:removeHighlightOptio
 1. option - (**)
 
 
-Form.Dropdown Method: resetTyped {#Form.Dropdown:resetTyped}
+Form.Dropdown Method: resetTyped {#Form-Dropdown:resetTyped}
 -------------------------------------------------------------
 
 
@@ -256,7 +268,7 @@ Form.Dropdown Method: resetTyped {#Form.Dropdown:resetTyped}
 
 
 
-Form.Dropdown Method: select {#Form.Dropdown:select}
+Form.Dropdown Method: select {#Form-Dropdown:select}
 -----------------------------------------------------
 
 
@@ -270,7 +282,7 @@ Form.Dropdown Method: select {#Form.Dropdown:select}
 2. e - (**)
 
 
-Form.Dropdown Method: toggle {#Form.Dropdown:toggle}
+Form.Dropdown Method: toggle {#Form-Dropdown:toggle}
 -----------------------------------------------------
 
 
@@ -285,4 +297,5 @@ Form.Dropdown Method: toggle {#Form.Dropdown:toggle}
 
 
 [Element]: http://mootools.net/docs/Element/Element
-[Form.Check]: #Form-Check
+[Form.Dropdown]: #Form-Dropdown
+[Form.SelectOption]: /Form/Form.SelectOption
