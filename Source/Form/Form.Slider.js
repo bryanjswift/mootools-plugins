@@ -123,19 +123,8 @@ Form.Slider = new Class({
 	initializeWrapper: function(element,dimension,size) {
 		var sides = this.options.vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var wrapperStyles = {};
-		var properties = [];
-		var props = ['padding','margin','border'];
-		props.each(function(prop) {
-			sides.each(function(side) {
-				var property = prop + side;
-				wrapperStyles[property] = element.getStyle(property);
-				properties.push(property);
-			});
-		});
-		var elementStyles = [0,0,0,0,0,0].associate(properties);
+		var elementStyles = {};
 		elementStyles[dimension] = 'auto';
-		elementStyles.position = 'relative';
-		wrapperStyles.overflow = 'hidden';
 		wrapperStyles[dimension] = size;
 		var wrapper = new Element('div',{
 			'class':'scrollbarWrapper',
