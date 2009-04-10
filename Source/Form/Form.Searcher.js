@@ -128,6 +128,7 @@ Form.Searcher = new Class({
 	quit: function(e) {
 		if (this.lastSearch) { this.field.set('value',this.lastSearch); }
 		this.field.blur();
+		this.highlighted = null;
 		this.fireEvent('quit',this);
 	},
 	reset: function() {
