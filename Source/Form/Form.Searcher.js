@@ -43,8 +43,8 @@ Form.Searcher = new Class({
 	// gets added as keyup event on alphanumeric keypress
 	filter: function() {
 		this.fireEvent('filterStart',this);
-		var value = this.field.get('value').toLowerCase();
-		this.lastSearch = value;
+		this.lastSearch = this.field.get('value');
+		var value = this.lastSearch.toLowerCase();
 		this.reset();
 		var matches = this.matches;
 		if (!value.match(this.options.search)) { return this.fireEvent('noMatch',this); }
