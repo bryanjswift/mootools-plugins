@@ -172,14 +172,14 @@ Form.Slider = new Class({
 		if (evt && evt.type === 'mousedown' || fromDelay) { this.buttonHoldInterval = this.pageForward.delay(150,this,[null,true]); }
 	},
 	recalibrate: function() {
-		this.fireEvent('onRecalibrateStart',this);
+		this.fireEvent('recalibrateStart',this);
 		var xy = this.xy;
 		this.element.addClass('recalibrating').setStyle(this.dimension,'auto');
 		var size = this.options.size || this.wrapper.getStyle(this.dimension).toInt();
 		if (this.getElementSize(this.element,xy) <= size) { this.unwrap(); }
 		else { this.wrap(size); }
 		this.element.removeClass('recalibrating');
-		this.fireEvent('onRecalibrateFinish',this);
+		this.fireEvent('recalibrateFinish',this);
 	},
 	scroll: function(e) {
 		if (!this.wrapper.hasClass('hovered')) { return; }
@@ -227,6 +227,7 @@ Form.Slider = new Class({
 		document.removeEvent('mousewheel',this.bound.mousewheel);
 		this.base.removeClass('sliding');
 		this.scrollbar.dispose();
+		this.fireEvent('unwrapped',this);
 	},
 	wrap: function(size) {
 		var scrollbar = this.scrollbar;
@@ -254,5 +255,6 @@ Form.Slider = new Class({
 		this.trackSize = trackSize;
 		this.pageSize = size * this.ratio;
 		if (this.position > this.limit) { this.setScrubberPosition(this.limit,false); }
+		this.fireEvent('wrapped',this);
 	}
 });
