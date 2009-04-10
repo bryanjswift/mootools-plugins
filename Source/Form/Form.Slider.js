@@ -174,11 +174,10 @@ Form.Slider = new Class({
 	recalibrate: function() {
 		this.fireEvent('recalibrateStart',this);
 		var xy = this.xy;
-		this.element.addClass('recalibrating').setStyle(this.dimension,'auto');
+		this.element.setStyle(this.dimension,'auto');
 		var size = this.options.size || this.wrapper.getStyle(this.dimension).toInt();
 		if (this.getElementSize(this.element,xy) <= size) { this.unwrap(); }
 		else { this.wrap(size); }
-		this.element.removeClass('recalibrating');
 		this.fireEvent('recalibrateFinish',this);
 	},
 	scroll: function(e) {
