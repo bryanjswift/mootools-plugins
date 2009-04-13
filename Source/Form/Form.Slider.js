@@ -116,8 +116,7 @@ Form.Slider = new Class({
 		return wrapper;
 	},
 	centerScrubberForClick: function(e) {
-		var evt = new Event(e);
-		evt.stop();
+		var evt = new Event(e).stop();
 		var xy = this.xy;
 		var scrubber = this.scrubber;
 		var clickPos = evt.page[xy] - this.track.getPosition()[xy] - (scrubber.getSize()[xy] / 2);
@@ -140,7 +139,7 @@ Form.Slider = new Class({
 		this.wrapper = null;
 	},
 	drag: function(e) {
-		var evt = new Event(e);
+		var evt = new Event(e).stop();
 		var position = evt.page[this.xy] - this.track.getPosition()[this.xy] - this.dragProperties.downPosition;
 		this.setScrubberPosition(position,false);
 	},
@@ -192,22 +191,20 @@ Form.Slider = new Class({
 		}
 	},
 	startDrag: function(e) {
-		var evt = new Event(e);
-		evt.stop();
+		var evt = new Event(e).stop();
 		var drag = this.dragProperties;
 		drag.on = true;
 		drag.downPosition = evt.page[this.xy] - this.scrubber.getPosition()[this.xy];
 		document.addEvents({mousemove:this.bound.scrubberDrag, mouseup:this.bound.scrubberUp});
 	},
 	stopDrag: function(e) {
-		var evt = new Event(e);
-		evt.stop();
+		var evt = new Event(e).stop();
 		var drag = this.dragProperties;
 		drag.on = false;
 		drag.downPosition = null;
 		document.removeEvents({mousemove:this.bound.scrubberDrag, mouseup:this.bound.scrubberUp});
 	},
-	stopEvent: function(e) { var evt = new Event(e); evt.stop(); },
+	stopEvent: function(e) { var evt = new Event(e).stop(); },
 	setScrubberPosition: function(position, animate) {
 		animate = $defined(animate) ? animate : this.options.animate;
 		if (position < 0) {
