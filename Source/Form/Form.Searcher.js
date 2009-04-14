@@ -101,7 +101,7 @@ Form.Searcher = new Class({
 				break;
 			case 13: // enter
 				evt.stop();
-				if (highlighted) { highlighted.select(); }
+				if (highlighted) { highlighted.select(this); }
 				break;
 			case 8: // backspace
 			case 32: // space
@@ -170,5 +170,5 @@ Form.Searcher.Match = new Class({
 		this.element.removeClass('highlighted');
 		this.fireEvent('removeHighlight',[this,e]);
 	},
-	select: function() { this.fireEvent('select',this); }
+	select: function(searcher) { this.fireEvent('select',[this,searcher]); }
 });
