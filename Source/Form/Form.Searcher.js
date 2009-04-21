@@ -122,7 +122,8 @@ Form.Searcher = new Class({
 	},
 	processMatch: function(data,options) {
 		var match = new Form.Searcher.Match(data,options);
-		match.element.addEvent('mouseenter',this.matchHighlight.bindWithEvent(this,[match.element]));
+		match.element.addEvents({
+			mouseenter:this.matchHighlight.bindWithEvent(this,[match.element]),click:match.select.pass([this],match)});
 		return match;
 	},
 	quit: function(e) {
@@ -151,10 +152,7 @@ Form.Searcher.Match = new Class({
 	initialize: function(data,options) {
 		this.setOptions(options);
 		this.data = data;
-		this.element = new Element('li',{
-			events: { click: this.select.bind(this) },
-			html: data.name
-		});
+		this.element = new Element('li',{html: data.name});
 		this.element.store('Form.Searcher::match',this);
 	},
 	destroy: function() {
