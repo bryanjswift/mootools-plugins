@@ -1,4 +1,4 @@
-Modal = new Class({
+var Modal = new Class({
 	Implements: [Events,Options],
 	options: {},
 	config: {
