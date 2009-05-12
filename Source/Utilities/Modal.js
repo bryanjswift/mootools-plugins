@@ -1,12 +1,13 @@
 var Modal = new Class({
 	Implements: [Events,Options],
-	options: {},
-	config: {
-		elementClass:'modal',
+	options: {
 		elHiddenSelector:'.modalHidden',
 		elShownSelector:'.modalShown',
 		cHiddenSelector:'.contentsHidden',
 		cShownSelector:'.contentsShown'
+	},
+	config: {
+		elementClass:'modal'
 	},
 	initialize: function(contents,options) {
 		this.setOptions(options);
