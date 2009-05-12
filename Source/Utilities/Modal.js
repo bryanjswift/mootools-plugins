@@ -11,7 +11,7 @@ var Modal = new Class({
 	},
 	initialize: function(contents,options) {
 		this.setOptions(options);
-		this.contents = contents; // contents needs to be of type Elements or type Element
+		this.contents = contents; // contents needs to be of type Element
 		this.element = new Element('div',{'class':this.config.elementClass}).adopt(contents);
 		$(document.body).adopt(this.element);
 		this.fireEvent('create',this);
