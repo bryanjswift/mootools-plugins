@@ -20,7 +20,7 @@ var Modal = new Class({
 		var that = this;
 		var evt = e ? new Event(e) : e;
 		this.fireEvent('hideStart',this);
-		this.element.get('morph').start(this.config.elHiddenSelector).chain(
+		this.element.get('morph').start(this.options.elHiddenSelector).chain(
 			that.fireEvent.pass(['hideComplete',that],that)
 		);
 	},
@@ -28,17 +28,17 @@ var Modal = new Class({
 		var that = this;
 		var evt = e ? new Event(e) : e;
 		this.fireEvent('showStart',this);
-		this.element.get('morph').start(this.config.elShownSelector).chain(
+		this.element.get('morph').start(this.options.elShownSelector).chain(
 			that.fireEvent.pass(['showComplete',that],that)
 		);
 	},
 	update: function(contents,selector) {
 		// contents needs to be of type Elements or type Element
-		this.contents.morph(this.config.cHiddenSelector);
-		var cmorph = contents.get('morph').set(this.config.cHiddenSelector);
+		this.contents.morph(this.options.cHiddenSelector);
+		var cmorph = contents.get('morph').set(this.options.cHiddenSelector);
 		this.element.empty().adopt(contents);
 		this.element.get('morph').start(selector).chain(
-			cmorph.start.pass([this.config.cShownSelector],cmorph)
+			cmorph.start.pass([this.options.cShownSelector],cmorph)
 		);
 	}
 });
