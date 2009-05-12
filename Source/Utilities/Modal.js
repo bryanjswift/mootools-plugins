@@ -33,7 +33,7 @@ var Modal = new Class({
 		);
 	},
 	update: function(contents,selector) {
-		// contents needs to be of type Elements or type Element
+		// contents needs to be of type Element
 		this.contents.morph(this.options.cHiddenSelector);
 		var cmorph = contents.get('morph').set(this.options.cHiddenSelector);
 		this.element.empty().adopt(contents);
