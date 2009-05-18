@@ -7,11 +7,6 @@ Class to represent a checkbox
 
 Events, Options
 
-
-
-Form.Check Method: constructor {#Form-Check:constructor}
-------------------------------
-
 ### Syntax:
 
 	var check = new Form.Check(element[, options]);
