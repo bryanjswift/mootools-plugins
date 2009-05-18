@@ -27,7 +27,7 @@ Form.RadioGroup = new Class({
 		radioOptions.disabled = radio.get('disabled');
 		var check = radio.retrieve('Form.Radio::data') || new Form.Radio(radio,$extend(radioOptions,this.options.radioOptions));
 		check.addEvent('onCheck',this.bound.select);
-		if (check.checked) { i ? this.changed(check) : this.value = check.value; }
+		if (check.checked) { i === 0 ? this.changed(check) : this.value = check.value; }
 		radio.store('Form.RadioGroup::data',this);
 		this.radios.push(check);
 	},
