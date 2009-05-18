@@ -43,8 +43,8 @@ Form.Searcher = new Class({
 	// gets added as keyup event on alphanumeric keypress
 	filter: function() {
 		this.fireEvent('filterStart',this);
-		var value = this.field.get('value').toLowerCase();
-		this.lastSearch = value;
+		this.lastSearch = this.field.get('value');
+		var value = this.lastSearch.toLowerCase();
 		this.reset();
 		var matches = this.matches;
 		if (!value.match(this.options.search)) { return this.fireEvent('noMatch',this); }
@@ -101,7 +101,7 @@ Form.Searcher = new Class({
 				break;
 			case 13: // enter
 				evt.stop();
-				if (highlighted) { highlighted.select(); }
+				if (highlighted) { highlighted.select(this); }
 				break;
 			case 8: // backspace
 			case 32: // space
@@ -122,12 +122,14 @@ Form.Searcher = new Class({
 	},
 	processMatch: function(data,options) {
 		var match = new Form.Searcher.Match(data,options);
-		match.element.addEvent('mouseenter',this.matchHighlight.bindWithEvent(this,[match.element]));
+		match.element.addEvents({
+			mouseenter:this.matchHighlight.bindWithEvent(this,[match.element]),click:match.select.pass([this],match)});
 		return match;
 	},
 	quit: function(e) {
 		if (this.lastSearch) { this.field.set('value',this.lastSearch); }
-		this.field.blur();
+		if (this.highlighted) { this.highlighted.removeHighlight(e); }
+		this.highlighted = null;
 		this.fireEvent('quit',this);
 	},
 	reset: function() {
@@ -150,10 +152,7 @@ Form.Searcher.Match = new Class({
 	initialize: function(data,options) {
 		this.setOptions(options);
 		this.data = data;
-		this.element = new Element('li',{
-			events: { click: this.select.bind(this) },
-			html: data.name
-		});
+		this.element = new Element('li',{html: data.name});
 		this.element.store('Form.Searcher::match',this);
 	},
 	destroy: function() {
@@ -169,5 +168,5 @@ Form.Searcher.Match = new Class({
 		this.element.removeClass('highlighted');
 		this.fireEvent('removeHighlight',[this,e]);
 	},
-	select: function() { this.fireEvent('select',this); }
+	select: function(searcher) { this.fireEvent('select',[this,searcher]); }
 });
