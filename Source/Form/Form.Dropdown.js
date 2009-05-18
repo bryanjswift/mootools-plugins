@@ -1,4 +1,11 @@
-/*extern Class, Events, Options, Event, Element, Form */
+/*extern $, $clear, Browser, Class, Events, Options, Event, Element, Form, window */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Form.Dropdown.js
+License: MIT-style license.
+*/
+
 if (typeof Form === 'undefined') { Form = {}; }
 
 Form.Dropdown = new Class({
@@ -121,7 +128,7 @@ Form.Dropdown = new Class({
 	},
 	expand: function(e) {
 		$clear(this.collapseInterval);
-		e ? new Event(e).stop() : null;
+		var evt = e ? new Event(e).stop() : null;
 		this.open = true;
 		this.input.focus();
 		this.element.addClass('active').addClass('dropdown-active');
@@ -174,7 +181,7 @@ Form.Dropdown = new Class({
 				if (typed.pressed > 0) { typed.pressed = typed.pressed - 1; }
 				if (!this.highlighted) { this.dropdownOptions.getLast().highlight(e); break; }
 				match = this.highlighted.element.getPrevious();
-				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions.getLast()
+				match = match ? match.retrieve('Form.SelectOption::data') : this.dropdownOptions.getLast();
 				match.highlight(e);
 				break;
 			case 40: // down

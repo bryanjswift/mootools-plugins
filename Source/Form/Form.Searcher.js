@@ -1,4 +1,11 @@
-/*extern Class, Events, Options, Form, $, Element */
+/*extern Browser, Class, Elements, Event, Events, Options, Form, $, Element */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Form.Searcher.js
+License: MIT-style license.
+*/
+
 if (typeof Form === 'undefined') { Form = {}; }
 
 Form.Searcher = new Class({

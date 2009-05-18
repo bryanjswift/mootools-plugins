@@ -1,4 +1,11 @@
-/*extern Class, Events, Options, Form, $, Element */
+/*extern $clear, $defined, Browser, Class, Event, Events, Options, Form, $, Element */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Form.Slider.js
+License: MIT-style license.
+*/
+
 if (typeof Form === 'undefined') { Form = {}; }
 
 Form.Slider = new Class({
@@ -34,10 +41,8 @@ Form.Slider = new Class({
 		var vertical = this.options.vertical;
 		var side = vertical ? 'top' : 'left';
 		var dimension = vertical ? 'height' : 'width';
-		var sides = vertical ? ['Top','Bottom'] : ['Left','Right'];
 		var xy = vertical ? 'y' : 'x';
 		var size = this.options.size || element.getStyle(dimension).toInt();
-		var elementSize = this.getElementSize(element,xy);
 		this.bound = {
 			backClick: this.pageBackward.bind(this),
 			buttonUp: this.clearButtonHoldInterval.bind(this),
@@ -182,10 +187,10 @@ Form.Slider = new Class({
 	scroll: function(e) {
 		if (!this.wrapper.hasClass('hovered')) { return; }
 		var evt = new Event(e);
-		if (evt.wheel > 0 && this.position != 0) {
+		if (evt.wheel > 0 && this.position !== 0) {
 			// wheel up
 			this.pageBackward(e);
-		} else if (evt.wheel < 0 && this.position != this.limit) {
+		} else if (evt.wheel < 0 && this.position !== this.limit) {
 			// wheel down
 			this.pageForward(e);
 		}

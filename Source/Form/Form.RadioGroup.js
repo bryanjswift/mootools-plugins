@@ -1,4 +1,11 @@
-/*extern Class, Events, Options, Form, $, Element */
+/*extern $extend, Class, Events, Options, Form, $, Element */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Form.RadioGroup.js
+License: MIT-style license.
+*/
+
 if (typeof Form === 'undefined') { Form = {}; }
 
 Form.RadioGroup = new Class({
@@ -16,7 +23,6 @@ Form.RadioGroup = new Class({
 		this.bound = { select: this.select.bind(this) };
 		group = $(group);
 		if (!group) { return this; }
-		var radioOptions = this.options.radioOptions;
 		var radios = group.getElements('input[type=radio]');
 		radios.each(this.addCheck,this);
 	},
@@ -27,7 +33,10 @@ Form.RadioGroup = new Class({
 		radioOptions.disabled = radio.get('disabled');
 		var check = radio.retrieve('Form.Radio::data') || new Form.Radio(radio,$extend(radioOptions,this.options.radioOptions));
 		check.addEvent('onCheck',this.bound.select);
-		if (check.checked) { i === 0 ? this.changed(check) : this.value = check.value; }
+		if (check.checked) {
+			if (i === 0) { this.changed(check); }
+			else { this.value = check.value; }
+		}
 		radio.store('Form.RadioGroup::data',this);
 		this.radios.push(check);
 	},
@@ -44,7 +53,7 @@ Form.RadioGroup = new Class({
 	select: function(checkedRadio) {
 		var radios = this.radios;
 		radios.each(function(radio) {
-			if (radio.checked && radio.value != checkedRadio.value) { radio.uncheck(); }
+			if (radio.checked && radio.value !== checkedRadio.value) { radio.uncheck(); }
 		});
 		if (checkedRadio.value !== this.value) { this.changed(checkedRadio); }
 	}

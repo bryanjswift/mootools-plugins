@@ -1,4 +1,11 @@
-/*extern Class, Events, Options, Event, Element, Form */
+/*extern $, Class, Events, Options, Event, Element, Form */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Form.SelectOption.js
+License: MIT-style license.
+*/
+
 if (typeof Form === 'undefined') { Form = {}; }
 
 Form.SelectOption = new Class({
