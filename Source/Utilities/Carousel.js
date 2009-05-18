@@ -1,3 +1,11 @@
+/*extern $, Class, Events, Options */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Carousel.js
+License: MIT-style license.
+*/
+
 var Carousel = new Class({
 	Implements: [Events,Options],
 	options: {
@@ -12,8 +20,8 @@ var Carousel = new Class({
 		this.position = 0;
 		this.size = this.items.length;
 		this.itemSize = this.items[0].getSize().x;
-		if (this.options.next) this.options.next.addEvent('click',this.next.bind(this));
-		if (this.options.previous) this.options.previous.addEvent('click',this.previous.bind(this));
+		if (this.options.next) { this.options.next.addEvent('click',this.next.bind(this)); }
+		if (this.options.previous) { this.options.previous.addEvent('click',this.previous.bind(this)); }
 		this.fireEvent('create',this);
 	},
 	next: function(e) {
