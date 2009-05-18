@@ -20,8 +20,8 @@ Class to represent a radio button
 
 Can only be changed by altering source or subclassing.
 
-* elementClass				- (*string*) added to the div when created. Value is 'radio'
-* storage							- (*string*) key used for element storage on the input passed to Form.Check constructor. Value is 'Form.Radio::data'
+* elementClass - (*string*) added to the div when created. Value is 'radio'
+* storage - (*string*) key used for element storage on the input passed to Form.Check constructor. Value is 'Form.Radio::data'
 
 ### Returns:
 

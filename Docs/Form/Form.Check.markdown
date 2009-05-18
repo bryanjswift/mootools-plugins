@@ -13,34 +13,34 @@ Events, Options
 
 ### Arguments:
 
-1. element						- (*mixed*) The id of a DOM element, a DOM element, or an [Element][]
-1. options						- (*object*, optional) the configuration options for the styled check element
+1. element - (*mixed*) The id of a DOM element, a DOM element, or an [Element][]
+1. options - (*object*, optional) the configuration options for the styled check element
 
 ### Options:
 
-* checked							- (*boolean* defaults to false) true if the option starts checked
-* disabled						- (*boolean* defaults to false) true if the option starts disabled
+* checked - (*boolean* defaults to false) true if the option starts checked
+* disabled - (*boolean* defaults to false) true if the option starts disabled
 
 ### Events:
 
-* change							- (*function*) Fired when the input element changes from checked to unchecked via toggle
-* check								- (*function*) Fired when the input becomes checked
-* create							- (*function*) Fired just before initialize finishes
-* disable							- (*function*) Fired when the check element is disabled
-* enable							- (*function*) Fired when the check element is enabled
-* highlight						- (*function*) Fired when the check element is mouse over
-* removeHighlight			- (*function*) Fired when the a mouse out event occurs on the check element
-* uncheck							- (*function*) Fired when the input becomes unchecked
+* change - (*function*) Fired when the input element changes from checked to unchecked via toggle
+* check - (*function*) Fired when the input becomes checked
+* create - (*function*) Fired just before initialize finishes
+* disable - (*function*) Fired when the check element is disabled
+* enable - (*function*) Fired when the check element is enabled
+* highlight - (*function*) Fired when the check element is mouse over
+* removeHighlight - (*function*) Fired when the a mouse out event occurs on the check element
+* uncheck - (*function*) Fired when the input becomes unchecked
 
 ### Configuration:
 
 Can only be changed by altering source or subclassing.
 
-* checkedClass				- (*string*) added to the div when checked. Value is 'checked'
-* disabledClass				- (*string*) added to the div when disabed. Value is 'disabled'
-* elementClass				- (*string*) added to the div when created. Value is 'check'
-* highlightedClass		- (*string*) added to the div when highlighted. Value is 'highlighted'
-* storage							- (*string*) key used for element storage on the input passed to Form.Check constructor. Value is 'Form.Check::data'
+* checkedClass - (*string*) added to the div when checked. Value is 'checked'
+* disabledClass - (*string*) added to the div when disabed. Value is 'disabled'
+* elementClass - (*string*) added to the div when created. Value is 'check'
+* highlightedClass - (*string*) added to the div when highlighted. Value is 'highlighted'
+* storage - (*string*) key used for element storage on the input passed to Form.Check constructor. Value is 'Form.Check::data'
 
 ### Returns:
 
