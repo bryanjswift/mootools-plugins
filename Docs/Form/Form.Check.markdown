@@ -134,4 +134,3 @@ Sets the checkbox to it's unchecked state
 
 
 [Element]: http://mootools.net/docs/Element/Element
-[Form.Check]: #Form-Check

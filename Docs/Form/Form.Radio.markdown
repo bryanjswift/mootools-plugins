@@ -38,4 +38,4 @@ Can only be changed by altering source or subclassing.
 
 
 [Element]: http://mootools.net/docs/Element/Element
-[Form.Check]: #Form-Check
+[Form.Check]: /Form/Form.Check
