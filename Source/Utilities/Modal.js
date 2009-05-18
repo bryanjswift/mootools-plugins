@@ -1,3 +1,11 @@
+/*extern $, Class, Element, Event, Events, Options */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Modal.js
+License: MIT-style license.
+*/
+
 var Modal = new Class({
 	Implements: [Events,Options],
 	options: {
@@ -18,7 +26,6 @@ var Modal = new Class({
 	},
 	hide: function(e) {
 		var that = this;
-		var evt = e ? new Event(e) : e;
 		this.fireEvent('hideStart',this);
 		this.element.get('morph').start(this.options.elHiddenSelector).chain(
 			that.fireEvent.pass(['hideComplete',that],that)
@@ -26,7 +33,6 @@ var Modal = new Class({
 	},
 	show: function(e) {
 		var that = this;
-		var evt = e ? new Event(e) : e;
 		this.fireEvent('showStart',this);
 		this.element.get('morph').start(this.options.elShownSelector).chain(
 			that.fireEvent.pass(['showComplete',that],that)
