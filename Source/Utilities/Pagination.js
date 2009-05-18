@@ -1,5 +1,12 @@
-/*extern Class, Events, Options */
-Pagination = new Class({
+/*extern $defined, $type, Class, Events, Options */
+/*jslint bitwise: true, browser: true, eqeqeq: true, forin: true, immed: true, newcap: true, nomen: true, plusplus: true, regexp: true, undef: true*/
+
+/*
+Script: Pagination.js
+License: MIT-style license.
+*/
+
+var Pagination = new Class({
 	Implements:[Events,Options],
 	options: {
 		pagesShown: 5,
