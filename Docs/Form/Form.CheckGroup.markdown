@@ -3,11 +3,6 @@ Class: Form.CheckGroup {#Form-CheckGroup}
 
 Class to represent a group of checkboxes
 
-
-
-Form.CheckGroup Method: constructor {#Form-CheckGroup:construcor}
------------------------------------
-
 Creates or holds a group of Form.Check by looking for all input[type=checkbox] under the element passed to the constructor.
 
 ### Syntax:
@@ -16,18 +11,18 @@ Creates or holds a group of Form.Check by looking for all input[type=checkbox] u
 
 ### Arguments:
 
-1. element						- (*mixed*) The id of a DOM element, a DOM element, or an [Element][] in which to look for checkbox inputs
-1. options						- (*object*, optional) the configuration options for the styled check element
+1. element - (*mixed*) The id of a DOM element, a DOM element, or an [Element][] in which to look for checkbox inputs
+1. options - (*object*, optional) the configuration options for the styled check element
 
 ### Options:
 
-* checkOptions				- (*object* defaults to empty object) passed to the Form.Check objects which get created
-* initialValues				- (*object* defaults to empty object) checked whenever a check is added to help determine whether the [Form.Check][] should start checked
+* checkOptions - (*object* defaults to empty object) passed to the Form.Check objects which get created
+* initialValues - (*object* defaults to empty object) checked whenever a check is added to help determine whether the [Form.Check][] should start checked
 
 ### Events:
 
-* disable							- (*function*) fired when Form.CheckGroup.disable is called
-* enable							- (*function*) fired when Form.CheckGroup.enable is called
+* disable - (*function*) fired when Form.CheckGroup.disable is called
+* enable - (*function*) fired when Form.CheckGroup.enable is called
 
 ### Returns:
 
@@ -52,7 +47,7 @@ Adds a checkbox stored on the passed element or by creating one from it
 
 ### Arguments:
 
-1. checkbox						- (*Element*) [Element][] from which to retrieve the Form.Check object or from which to create a Form.CHeck
+1. checkbox - (*Element*) [Element][] from which to retrieve the Form.Check object or from which to create a Form.CHeck
 
 
 

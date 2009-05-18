@@ -14,17 +14,17 @@ Class to represent option elements in a styled select or multi-select element
 
 ### Options:
 
-* optionTag						- (*string*: defaults to 'li') type of element used to mimic an option element
-* selected						- (*boolean*: defaults to false) true if this option starts selected
+* optionTag - (*string*: defaults to 'li') type of element used to mimic an option element
+* selected - (*boolean*: defaults to false) true if this option starts selected
 
 ### Events:
 
-* onDeselect					- (*function*) Fired when the option is explicitly deselected
-* onDisable						- (*function*) Fired when the option is disabled
-* onEnable						- (*function*) Fired when the option is enabled
-* onHighlight					- (*function*) Fired when the option is highlighted
-* onRemoveHighlight		- (*function*) Fired when the option's highlight is removed
-* onSelect						- (*function*) Fired when the option gets selected
+* onDeselect - (*function*) Fired when the option is explicitly deselected
+* onDisable - (*function*) Fired when the option is disabled
+* onEnable - (*function*) Fired when the option is enabled
+* onHighlight - (*function*) Fired when the option is highlighted
+* onRemoveHighlight - (*function*) Fired when the option's highlight is removed
+* onSelect - (*function*) Fired when the option gets selected
 
 ### Returns:
 
