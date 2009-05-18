@@ -31,7 +31,7 @@ Creates or holds a group of Form.Radio by looking for all input[type=radio] unde
 ### Examples:
 
 	var checkOpts = {onChange:function(check) { check.toggle(); }};
-	var RadioGroup = new Form.RadioGroup(document.getElement('div.checks'),{checkOptions:checkOpts});
+	var radioGroup = new Form.RadioGroup(document.getElement('div.checks'),{checkOptions:checkOpts});
 
 
 
@@ -42,23 +42,12 @@ Adds a checkbox stored on the passed element or by creating one from it
 
 ### Syntax:
 
-	var element = new Element('input',{type:'checkbox'});
-	RadioGroup.addCheck(element);
+	var element = new Element('input',{type:'checkbox',value:'1'});
+	radioGroup.addCheck(element);
 
 ### Arguments:
 
-1. checkbox - (*Element*) [Element][] from which to retrieve the Form.Radio object or from which to create a Form.CHeck
-
-
-
-Form.RadioGroup Method: checkAll {#Form-RadioGroup:checkAll}
---------------------------------
-
-Mark all Form.Radio objects in this Form.RadioGroup as checked
-
-### Syntax:
-
-	myRadioGroup.checkAll();
+1. radio - (*Element*) [Element][] from which to retrieve the Form.Radio object or from which to create a Form.Radio
 
 
 
@@ -84,14 +73,19 @@ Mark all Form.Radio objects in this Form.RadioGroup as enabled
 
 
 
-Form.RadioGroup Method: uncheckAll {#Form-RadioGroup:uncheckAll}
--------------------------------
+Form.RadioGroup Method: select {#Form-RadioGroup:select}
+------------------------------
 
-Mark all Form.Radio objects in this Form.RadioGroup as not checked
+Make the passed in Form.Radio the selected one
 
 ### Syntax:
 
-	myRadioGroup.uncheckAll();
+	var radio = new Form.Radio(element);
+	radioGroup.select(radio);
+
+### Arguments:
+
+1. radio - (*Form.Radio*) [Form.Radio][] radio object to mark as selected
 
 
 
